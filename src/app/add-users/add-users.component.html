@@ -1,0 +1,126 @@
+<div class="container">
+  <div id="delete" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete User</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you Sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal"(click)="deleteUser()" >Yes</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<a (click)="toHome()">Home</a>
+<hr>
+<div class="form-container">  
+  <div class="col-lg-6">
+      <div class="col-lg-3">
+        <label>Name</label>
+      </div>
+      <div class="col-lg-9">
+        <input type="email" [(ngModel)]="user_name" placeholder=" name">
+      </div>
+      <div class="col-lg-3">
+        <label>Email</label>
+      </div>
+      <div class="col-lg-9">
+        <input type="email" [(ngModel)]="email" placeholder="email"> @thorntontomasetti.com
+      </div>
+      <div class="col-lg-3">
+        <label>Password</label>
+      </div>
+      <div class="col-lg-9">
+        <input type="password" [(ngModel)]="password" placeholder="password">
+        <p class="password">* Password should be atleast 6 characters</p>
+      </div>
+      <div class="col-lg-3">
+        <label>Image url</label>
+      </div>
+      <div class="col-lg-9">
+        <input type="text" [(ngModel)]="imageUrl" placeholder="Image Url"><br>
+      </div>
+
+        <button (click)="signup()">
+          Add
+        </button>
+    </div>
+</div>
+  <hr>
+  <div class="clearfix"></div>
+<div class="user-container col-lg-6">
+  <h2>users</h2>
+  <div class="col-lg-12 users">
+     <ul class="userList">
+      <div class="col-lg-12">
+          <li *ngFor="let user of userList[0];  let i =index">
+            <span class="glyphicon glyphicon-remove-circle remove" data-toggle="modal" data-target="#delete"  (click)="getUser(user.$key)"></span>
+        <p (click)="getUser(user.$key)">{{user.user_name}} </p>
+          </li>
+      </div>  
+        
+    </ul>
+  </div>
+
+</div>
+  <div class="col-lg-6 userDetails" *ngIf="showUser">
+          <h2>Actions</h2>
+            <h3>{{userObject.user_name}} // {{userObject.email}}</h3>
+            <div class="form-group" >
+              <div class="checkbox">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                  <label>
+                Admin Acess
+                  </label>
+                </div>
+              <div class="col-lg-2 col-md-2 col-sm-12">
+                <input  type="checkbox" 
+                        [(ngModel)]="userObject.admin_access">
+              </div>
+              </div>
+           </div>
+            <div class="clearfix"></div>
+            <div class="form-group">
+              <div class="checkbox">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                  <label>
+                Manager Acess
+                  </label>
+                </div>
+              <div class="col-lg-2 col-md-2 col-sm-12">
+                <input  type="checkbox" 
+                        [(ngModel)]="userObject.manager_access">
+              </div>
+              </div>
+           </div>
+            <div class="clearfix"></div>
+             <div class="form-group users">
+              <div class="col-lg-4">
+                <label>User name</label>
+              </div>
+              <div class="col-lg-6">
+                <input type="email" [(ngModel)]="userObject.user_name" placeholder="user name"><br>
+              </div>
+           </div>
+           <div class="clearfix"></div>
+              <div class="form-group users">
+              <div class="col-lg-4">
+                <label>Image Url</label>
+              </div>
+              <div class="col-lg-6">
+                <input type="text" [(ngModel)]="userObject.imageUrl" placeholder="Image Url"><br>
+              </div>
+           </div>
+            <div class="clearfix"></div>
+          <button (click)="saveUser()">Save</button>
+  
+      </div>
+</div>

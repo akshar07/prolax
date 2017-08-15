@@ -1,0 +1,207 @@
+<div class="container">
+    <div id="delete" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Project</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you Sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal"(click)="delete()" >Yes</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="timeline">
+
+   <div *ngIf="userkey">
+     <app-timeline [Key]="userkey"></app-timeline>
+  </div> 
+
+</div>
+  <div class="home-wrapper">
+      <div  class="col-lg-12 sus-header">
+        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
+        
+        <!-- add new project -->
+        <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
+        <!-- search -->
+        <div class="col-xs-5 row mb-2">
+          <input  type="text"  
+                placeholder="Search: project number, name, or manager" 
+                name="Search" 
+                [(ngModel)]="filter.combined"
+                class="form-control"
+                (keyup)="transform(filter)"> 
+        </div>
+      </div>
+      <!-- results list -->
+      <div class="results col-lg-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th class="col-lg-2">Project Number </th>
+              <th class="col-lg-3">Project Name </th>
+              <th class="col-lg-2">Project Manager </th>
+              <th class="col-lg-2">Client </th>
+              <th class="col-lg-2">Climate Zone</th>
+              <th class="col-lg-3"> state </th>
+              <th class="col-lg-2" *ngIf="isAdmin==='true'">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let res of pagedItems " >
+              <td (click)="goToProject(res)">{{res.project_number}}</td>
+              <td (click)="goToProject(res)">{{res.title}}</td>
+              <td (click)="goToProject(res)">{{res.manager}}</td>
+              <td (click)="goToProject(res)">{{res.client}}</td>
+              <td (click)="goToProject(res)">{{res.climate}}</td>
+              <td *ngIf="res.projectStatus">Closed</td>
+              <td *ngIf="!res.projectStatus">Open</td>
+              <td *ngIf="isAdmin==='true'"><button type="button" class="btn btn-default btn-xs"data-toggle="modal" data-target="#delete" (click)="getProject(res.$key,res)">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>      
+  </div>
+  <div class="col-lg-12">
+    <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm">
+      <li [ngClass]="{disabled:pager.currentPage === 1}">
+        <a (click)="setPage(1)">First</a>
+      </li>
+      <li [ngClass]="{disabled:pager.currentPage === 1}">
+        <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+      </li>
+      <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+        <a (click)="setPage(page)">{{page}}</a>
+      </li>
+      <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+        <a (click)="setPage(pager.currentPage + 1)">Next</a>
+      </li>
+      <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+        <a (click)="setPage(pager.totalPages)">Last</a>
+      </li>
+    </ul>
+</div>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Project</h4>
+      </div>
+      <div class="modal-body">
+       <form class="form-horizontal" [formGroup]="inputsForm">
+          <div class="form-group">
+            <label class="control-label col-sm-4" for="project_number">Project Number:</label>
+            <div class="col-sm-6">
+              <input  type="text" 
+                      class="form-control" 
+                      placeholder="Project Number"
+                      formControlName="project_number"
+                      [(ngModel)]="project_number"
+                      name="project_number">
+                     <p *ngIf="inputsForm.controls.project_number.dirty && inputsForm.controls.project_number?.errors" class="formInvalid">Project Number is Required</p>
+            </div>
+          </div>
+          <div class="form-group" >
+            <label class="control-label col-sm-4" for="pwd">Project Name:</label>
+            <div class="col-sm-6"> 
+              <input  type="text" 
+                      class="form-control" 
+                      placeholder="Enter Project Name"
+                      formControlName=title
+                      [(ngModel)]="title"
+                      name="title">
+             <p *ngIf="inputsForm.controls.title.dirty && inputsForm.controls.title?.errors" class="formInvalid">Project Name is Required</p>
+            </div>
+          </div>
+           <div class="form-group" >
+            <label class="control-label col-sm-4" for="pwd">Manager Name:</label>
+            <div class="col-sm-6"> 
+              <input  type="text" 
+                      class="form-control" 
+                      placeholder="Enter Manager Name"
+                      formControlName="manager"
+                      [(ngModel)]="manager"
+                      name="manager">
+              <p *ngIf="inputsForm.controls.manager.dirty && inputsForm.controls.manager?.errors" class="formInvalid">Manager is Required</p>
+            </div>
+          </div>
+          <div class="form-group" >
+            <label class="control-label col-sm-4" for="pwd">Client Name: </label>
+            <div class="col-sm-6"> 
+              <input  type="text" 
+                      class="form-control" 
+                      placeholder="Enter Client Name"
+                      formControlName="client"
+                      [(ngModel)]="client"
+                      name="client">
+                        <p *ngIf="inputsForm.controls.client.dirty && inputsForm.controls.client?.errors" class="formInvalid">Client is Required</p>
+
+            </div>
+          </div>
+          <div class="form-group" >
+            <label class="control-label col-sm-4" for="pwd">Climate Zone:</label>
+            <div class="col-sm-6"> 
+              <input  type="text" 
+                      class="form-control" 
+                      placeholder="Climate Zone"
+                      formControlName="climate"
+                      [(ngModel)]="climate"
+                      name="climate">
+                       <p *ngIf="inputsForm.controls.climate.dirty && inputsForm.controls.climate?.errors" class="formInvalid">Climate Zone is Required</p>
+
+            </div>
+          </div>
+          <div class="form-group"> 
+           <label class="control-label col-sm-4" for="pwd">Start Date:</label>
+            <div class="col-sm-6"> 
+             <input  
+                    (ngModelChange)="startDate = $event" 
+                    type="date" 
+                    name="startDate"
+                    formControlName="startDate">
+                    <p *ngIf="inputsForm.controls.startDate.dirty && inputsForm.controls.startDate?.errors" class="formInvalid">Start Date is Required</p>
+
+            </div>
+          </div>
+           <div class="form-group"> 
+           <label class="control-label col-sm-4" for="pwd">Due Date:</label>
+            <div class="col-sm-6"> 
+             <input  
+                    (ngModelChange)="endDate = $event;checkDate()" 
+                    type="date" 
+                    name="endDate"
+                    formControlName="endDate">
+                       <p *ngIf="inputsForm.controls.endDate.dirty && inputsForm.controls.endDate?.errors" class="formInvalid">Due Date is Required</p>
+                <p *ngIf="dateInvalid" class="formInvalid">Enter Due Date after Start Date</p>
+            </div>
+          </div>
+          <!-- <div class="form-group"> 
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+          </div> -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]=" dateInvalid" class="btn btn-default" data-dismiss="modal" (click)="addToList();reset()" >Add</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="say()">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,19 @@
+.projects li label{
+    font-weight: bold
+}
+
+table td{
+    cursor: pointer;
+}
+
+.sus-header{
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+.results{
+    text-transform: uppercase;
+}
+.formInvalid{
+    color:red; 
+    font-size: 13px;
+}

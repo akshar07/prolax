@@ -1,0 +1,56 @@
+.login-form{
+    top:0!important
+}
+.add-form{
+  width: 400px;
+    /* -webkit-transform: translate(-50%); */
+padding-left:20px;
+}
+    input{
+        margin-bottom: 10px;
+    }
+.form-container{
+    position: relative;
+}
+.userList{
+    list-style: none;
+    padding:0;
+}
+.userList li{
+      padding: 7px;
+    border-bottom: 1px solid #ccc;
+    display: inline-block;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+     position: relative;
+}
+    .userList li p{
+        margin:0px;
+        position: relative;
+    }
+.userDetails button{
+    margin-top: 20px;
+    margin-left: 30px;
+}
+.user-container h2{
+    text-transform: uppercase;
+    padding-left:20px;
+}
+.userDetails{
+    padding-left:50px;
+}
+.userDetails h2{
+     padding-left:0px !important;
+}
+    .password{font-size: 12px;}
+a {
+    font-size: 18px;
+}
+.remove{
+      position: absolute;
+    top: -5px;
+    right: -6px;
+        color: #F39C12;
+}

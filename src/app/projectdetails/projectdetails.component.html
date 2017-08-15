@@ -1,0 +1,291 @@
+<div class="container">
+       <!-- delet Modal-->
+    <div id="delete" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Delete Task</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you Sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"(click)="deleteTask()" >Yes</button>
+            </div>
+            </div>
+
+        </div>
+     </div>
+    <div class="timeline-wrapper" >
+        <h3>{{timelineToShow?.project_number}} // {{timelineToShow?.project_name}}</h3>
+        <p class="desc"><b> Project Manager:</b> {{timelineToShow?.manager}}</p>
+        <!--modal-->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" (click)="resetForm()">&times;</button>
+                    <h4 class="modal-title" *ngIf="!edit">Create Task</h4>
+                    <h4 class="modal-title" *ngIf="edit">Edit Task</h4>
+                </div>
+                <div class="modal-body">
+                <form class="form-horizontal" [formGroup]="inputsForm">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="email">Task Name</label>
+                        <div class="col-sm-6">
+                        <input  type="text" 
+                                class="form-control" 
+                                placeholder="Task Name"
+                                formControlName="taskName"
+                                [(ngModel)]="taskObj.taskName"
+                                name="taskName">
+                        </div>
+                    </div>
+                    <div class="form-group select" >
+                        <label class="control-label col-sm-4" for="pwd">Category Name:</label>
+                        <div class="col-sm-6"> 
+                            <select type="number" [(ngModel)]="categoryType" formControlName="categoryType" (ngModelChange)="toNumber()">
+                                <option *ngFor="let category of categoryArray" [ngValue]="category.name">{{category.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group select" >
+                        <label class="control-label col-sm-4" for="pwd">Assign To</label>
+                        <div class="col-sm-6"> 
+                            <select type="number" [(ngModel)]="assigned_to.user_key" formControlName="assigned_to" (ngModelChange)="toNumberUsers()">
+                                <option *ngFor="let user of userList | async" [ngValue]="user" [selected]="user.$key === taskObj.assigned_to">{{user.user_name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group" >
+                        <label class="control-label col-sm-4" for="pwd">Assign To:</label>
+                        <div class="col-sm-6"> 
+                        <input  type="text" 
+                                class="form-control" 
+                                placeholder="Assign To"
+                                formControlName="assigned_to"
+                                [(ngModel)]="taskObj.assigned_to"
+                                name="assigned_to">
+                        </div>
+                    </div> -->
+                    <div class="form-group"> 
+                    <label class="control-label col-sm-4" for="pwd">Start Date:</label>
+                        <div class="col-sm-6"> 
+                        <input  
+                                (ngModelChange)="taskObj.startDate = $event" 
+                                type="date" 
+                                name="startDate"
+                                formControlName="startDate"
+                                [value]="taskObj.startDate | date:'yyyy-MM-dd'"
+                                >
+                                
+                        </div>
+                    </div>
+                    <div class="form-group"> 
+                    <label class="control-label col-sm-4" for="pwd">Due Date:</label>
+                        <div class="col-sm-6"> 
+                        <input  
+                                (ngModelChange)="taskObj.dueDate = $event; checkDate()" 
+                                type="date" 
+                                name="dueDate"
+                                formControlName="dueDate"
+                                [value]="taskObj.dueDate | date:'yyyy-MM-dd'"
+                                >
+                        </div>
+                    </div>
+                    <div class="form-group"> 
+                    <label class="control-label col-sm-4" for="pwd">Hours</label>
+                        <div class="col-sm-6"> 
+                        <input  
+                                [(ngModel)]="taskObj.hours" 
+                                type="number" 
+                                name="hours"
+                                formControlName="hours">
+                        </div>
+                    </div>
+                    <div class="form-group"> 
+                    <label class="control-label col-sm-4" for="pwd">Task Description</label>
+                        <div class="col-sm-6"> 
+                        <textarea  
+                                    formControlName="details" 
+                                    [(ngModel)]="taskObj.details"
+                                    rows="3">
+                        </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="edit">
+                        
+                         <label class="control-label col-sm-4" for="pwd">Completed</label>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                        <input  type="checkbox" 
+                                formControlName="status" 
+                                [(ngModel)]="taskObj.status">
+                        </div>
+                  
+                </div>
+                </form>
+                <p *ngIf="dateInvalid" class="invalidDate">Enter Due Date after Start Date</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"(click)="addTask();resetForm()"data-dismiss="modal" *ngIf="!edit" [disabled]="dateInvalid">Add</button>
+                     <button type="button" class="btn btn-default"(click)="editTask();resetForm()"data-dismiss="modal" *ngIf="edit" [disabled]="dateInvalid">Save</button>
+                    <button type="button" class="btn btn-default" (click)="resetForm()" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+
+            </div>
+            </div>
+               <!--edit Modalend ednd-->     
+        <ul class="timeline">
+            <div class="col-lg-offset-2">
+                <button type="button" 
+                class="btn btn-default btn-sm"
+                data-toggle="modal" 
+                data-target="#myModal"
+                (click)="edit=false; clean();"*ngIf="isManager==='true'">New Task</button>
+                <button type="button" class="btn btn-default btn-sm"  (click)="sortTasks()">Sort Tasks</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm"  (click)="filterTaskCategory()">Tasks</button>
+                    <button type="button" class="btn btn-default btn-sm"  (click)="filterMilestoneCategory()">Milestones</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" (click)="filterInProcressCategory()">InProgress</button>
+                    <button type="button" class="btn btn-default btn-sm" (click)="filterFinishedCategory()">Finished</button>
+                    <button type="button" class="btn btn-default btn-sm" >Attention</button>
+                </div>
+                <button type="button" class="btn btn-default btn-sm"  (click)="showMine()">My Tasks</button>   
+                <button type="button" class="btn btn-default btn-sm"  (click)="showAll()">All</button>                     
+            </div>    
+            <li *ngFor="let item of taskList; let i =index"  class="timelineItem row col-lg-12">
+                <!-- timelineItem-left -->
+                <div class="timelineItem-left col-lg-2 ">
+                    <p>{{item.dueDate | date}}</p>
+                </div>
+
+                <!-- timelineItem-middle -->
+                <div class="timelineItem-body  col-lg-8" [ngClass]="setColor(item.dueDate,item.status)<=2 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':'coming')">
+                    <span></span>
+                    <img class="img-circle timeline-avatar" [src]="item.imageUrl">
+                    <div class="header">
+                  
+                      <p>  <strong class="text-capitalize"> {{item.taskName}} </strong> // {{item.assigned_to}}  <span class="status" *ngIf="item.status">Completed</span><span class="status" *ngIf="!item.status">In Progress</span></p>
+                    </div>
+                    <div class="col-lg-12 details itemContent">
+                        {{item.details}} 
+                    </div>
+                    <div class="col-lg-3 details">
+                        <p><strong class="text-capitalize">Start Date:</strong> {{item.startDate}}</p>
+                    </div>
+                    <div class="col-lg-3 details">
+                         <p><strong class="text-capitalize">Due Date:</strong> {{item.dueDate}}</p>
+                    </div>
+                    <div class="col-lg-3 details">
+                        <p><strong class="text-capitalize">Category:</strong> {{item.categoryType}}</p>
+                    </div>
+                    <div class="col-lg-2 details">
+                        <p><strong class="text-capitalize">Hours:</strong> {{item.hours}}</p>
+                    </div>
+                    <div class="col-lg-1 details">
+                        <button type="button" class="btn btn-sm action-buttons" data-toggle="collapse" [attr.data-target]="'#' + i"(click)="getTask(item.$key)">+</button>
+                        
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id={{i}} class="collapse collapse-content ">
+                        
+                            
+                        <div id="inputPanel{{i}}" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                        <!-- Nav tabs -->
+                            <ul class="nav nav-pills" role="tablist">
+                                <li class="nav-item active">
+                                <a class="nav-link active" data-toggle="tab" href="#qc1{{i}}" role="tab">QC-1</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#qc2{{i}}" role="tab">QC-2</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#qcc{{i}}" role="tab">Task logs</a>
+                                </li>
+                            </ul>
+                        <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="qc1{{i}}" role="tabpanel">
+                                    <app-qc1 [taskId]="item.$key"[isManager]="isManager"></app-qc1>
+                                </div>
+                                <div class="tab-pane " id="qc2{{i}}" role="tabpane2">
+                                        <app-qc2 [taskId]="item.$key" [isManager]="isManager"></app-qc2>
+                                </div>
+                                <div class="tab-pane " id="qcc{{i}}" role="tabpane2">
+                                        <app-qc-results [taskId]="item.$key"></app-qc-results>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- timelineItem-right -->
+                <div class="timelineItem-edit col-lg-2">
+                    <button type="button" 
+                            class="btn btn-default btn-sm btn-circle action-buttons col-lg-6" 
+                            (click)="getTask(item.$key)"
+                            data-toggle="modal" data-target="#delete">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                    </button>
+                    <button type="button" 
+                            class="btn btn-default btn-sm btn-circle action-buttons col-lg-6 " 
+                            data-toggle="modal" 
+                            data-target="#myModal" 
+                            (click)="getTask(item.$key)"
+                            *ngIf="isManager==='true'">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                    <button type="button" 
+                            class="btn btn-default btn-sm btn-circle action-buttons col-lg-6" 
+                            (click)="getTask(item.$key)"
+                            *ngIf="isManager==='true'" data-toggle="modal" data-target="#delete">
+                            <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+           </li>
+       </ul>
+        <div class="clearfix"></div>
+          <!--project closeout task-->
+          <ul class="timeline ">
+            <li class="timelineItem closeout-box row col-lg-12">
+                <div class="timelineItem-left closeout col-lg-2 ">
+                 
+                </div>
+
+                <!-- timelineItem-middle -->
+                <div class="timelineItem-body closeout col-lg-8">
+                    <div class="header">
+                        <strong class="text-capitalize"> {{timelineToShow?.project_number}} // {{timelineToShow?.project_name}} - Close Out </strong> 
+                        <button type="button" class="btn btn-sm action-buttons pull-right" data-toggle="collapse"data-target="#closeout">+</button>
+                    </div>
+                    <div class="clearfix"></div>
+                   <div id="closeout" class="collapse collapse-content ">
+                      <app-closeout [projectId]="id" [isManager]="isManager" (onComplete)="onComplete($event)"></app-closeout>
+                </div>
+                  
+
+                </div>
+                 <div class="timelineItem-edit col-lg-2">
+                    <!-- <button type="button" class="btn btn-default btn-sm btn-circle action-buttons col-lg-6 " data-toggle="modal" data-target="#myModal" (click)="getTask(item.$key)"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button type="button" class="btn btn-default btn-sm btn-circle action-buttons col-lg-6" (click)="getTask(item.$key);deleteTask()"><span class="glyphicon glyphicon-remove"></span></button> -->
+                </div>
+
+            </li>
+          </ul>
+              <div class="clearfix"></div>  
+        <!--project closeout task end-->
+    </div>
+    <div class="clearfix"></div>
+</div>

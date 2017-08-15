@@ -1,0 +1,17 @@
+.closeOutForm textarea{
+    width:100%;
+}
+.frontComment label{
+    /* font-weight: 400; */
+    cursor: pointer;
+}
+.edit{margin-bottom: 10px;}
+.down p,.down ul li {
+        padding-left: 10px;
+    font-size: 13px;
+    color: #768390;
+}
+.collapse ul li{
+    margin-bottom: 5px;
+}
+.reopen{margin-right:20px;}
