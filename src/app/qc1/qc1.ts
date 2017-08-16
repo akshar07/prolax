@@ -1,6 +1,7 @@
 export class QC1{
 
 
+
 Object={
 // large Form Inputs // Front Section
 coverPage:false,tableContents:false,executiveSummary:false,

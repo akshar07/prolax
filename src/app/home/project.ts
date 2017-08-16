@@ -1,13 +1,13 @@
 export class Project {
- 
   project_number: string="";
   manager: string="";
   title: string="";
-  projectStatus:boolean;
-  timeline_key:string="";
+  projectStatus:boolean=false;
   client:string="";
   climate_zone:string="";
-  combined: string = `${this.manager}${this.project_number}${this.title}`;
-  $key:string;
-  assigned_to:{assigned_to:""};
+  services:[""];
+  assigned_to:[""];
+  startDate:string=""
+  endDate:string="";
+  combined?: string = `${this.manager}${this.project_number}${this.title}`;
 }

@@ -19,8 +19,6 @@ export class AuthComponent implements OnInit {
 
   }
 username:string="";
-
-
   login() {
      this.email=`${this.email}@thorntontomasetti.com`;
        

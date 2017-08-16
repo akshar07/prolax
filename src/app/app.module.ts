@@ -25,6 +25,9 @@ import { CloseoutComponent } from './closeout/closeout.component';
 import { Http } from '@angular/http';
 import { AddUSersComponent } from './add-users/add-users.component';
 import { TimelineComponent } from './timeline/timeline.component';
+import { UserService } from './home/user.service';
+import { ProjectService } from './home/project.service';
+import { ManagerService } from './home/manager.service';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,7 @@ import { TimelineComponent } from './timeline/timeline.component';
       { enableTracing: false } // <-- debugging purposes only
     )
   ],
-  providers: [ PagerService,AuthService,LoginRouteGuard],
+  providers: [ PagerService,AuthService,LoginRouteGuard,UserService,ProjectService,ManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -26,9 +26,9 @@
   </div> 
 
 </div>
-  <div class="home-wrapper">
+  <div class="home-wrapper" *ngIf="isManager">
       <div  class="col-lg-12 sus-header">
-        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
+        <h1 class="page-header">Project List {{isManager}} <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
         
         <!-- add new project -->
         <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
@@ -62,7 +62,7 @@
               <td (click)="goToProject(res)">{{res.title}}</td>
               <td (click)="goToProject(res)">{{res.manager}}</td>
               <td (click)="goToProject(res)">{{res.client}}</td>
-              <td (click)="goToProject(res)">{{res.climate}}</td>
+              <td (click)="goToProject(res)">{{res.climate_zone}}</td>
               <td *ngIf="res.projectStatus">Closed</td>
               <td *ngIf="!res.projectStatus">Open</td>
               <td *ngIf="isAdmin==='true'"><button type="button" class="btn btn-default btn-xs"data-toggle="modal" data-target="#delete" (click)="getProject(res.$key,res)">Delete</button></td>
