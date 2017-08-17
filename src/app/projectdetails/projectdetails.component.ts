@@ -53,7 +53,7 @@ export class ProjectdetailsComponent implements OnInit {
   }
   //modelling inputs
   categoryType: string;
-  assigned_to = { user_name: "", imageUrl: "", user_key: { $key: "", imageUrl: "" } }
+  assigned_to =  { $key: "", imageUrl: "",user_name:"" } 
   taskObj = {
     taskName: "",
     categoryType: "",
@@ -64,7 +64,6 @@ export class ProjectdetailsComponent implements OnInit {
     hours: 0,
     status: false,
     imageUrl: this.assigned_to.imageUrl,
-   
   }
   clean() {
     this.inputsForm.reset();
@@ -73,9 +72,7 @@ export class ProjectdetailsComponent implements OnInit {
     { num: 0, name: "Task" },
     { num: 1, name: "Milestone" }
   ];
-
   setColor(date:string, complete:boolean){
-
   let t=new Date(date).getDate();
   let d= new Date().getDate();
   if(t-d<0 && complete==false){
@@ -90,10 +87,8 @@ export class ProjectdetailsComponent implements OnInit {
     this.taskObj.categoryType = this.categoryType
   }
   toNumberUsers() {
-
-    this.taskObj.assigned_to = this.assigned_to.user_key.$key;
-    this.taskObj.imageUrl = this.assigned_to.user_key.imageUrl;
-    console.log( this.taskObj)
+    this.taskObj.assigned_to = this.assigned_to.user_name
+    this.taskObj.imageUrl = this.assigned_to.imageUrl;
   }
   timeline_key: "";
   onComplete(bool) {
@@ -118,12 +113,13 @@ export class ProjectdetailsComponent implements OnInit {
       this.project_name=info.project_name;
       this.projectManager=info.manager;
     })
+    this.userList=this.userService.getUsers();
     let projectTasksObs=this.projectService.getTimeline(this.projectID);
+
     projectTasksObs.subscribe(tasks=>{
       this.taskList=tasks;
       this.globalTasks = tasks;
-      // this.sortTasks();
-      // this.custom(this.taskList)
+      this.custom(this.globalTasks)
     })
     this.inputsForm = this.fb.group({
       taskName: [this.taskObj.taskName],
@@ -142,7 +138,7 @@ export class ProjectdetailsComponent implements OnInit {
       this.projectStatus = "Completed";
     }
     this.authService.user.subscribe((val => { this.routeThis(val) }));
-    this.userList=this.userService.getUsers();
+
   }
   routeThis(val) {
     if (!val)
@@ -173,41 +169,41 @@ export class ProjectdetailsComponent implements OnInit {
   showAll() {
     this.taskList = this.globalTasks;
   }
-  // custom(array: any) {
-
-  //   for (let i = 0; i < array.length; i++) {
-  //     for (let j = 0; j < this.userArray.length; j++) {
-
-  //       if (this.taskList[i].assigned_to === this.userArray[0][j].$key) {
-  //         this.taskList[i].assigned_to = this.userArray[0][j].user_name;
-  //         this.taskList[i].imageUrl = this.userArray[0][j].imageUrl;
-
-  //       }
-  //       else {
-
-  //       }
-
-  //     }
-  //   }
-  // }
+  custom(array: any) {
+    let userArray;
+    this.userList.subscribe((users)=>{
+      userArray=users;
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j <userArray.length; j++) {
+            console.log(this.taskList[i]);
+            console.log(userArray[j])
+          if (this.taskList[i].assigned_to === userArray[j].user_name) {
+            this.taskList[i].assigned_to = userArray[j].user_name
+            this.taskList[i].imageUrl = userArray[j].imageUrl;
+          }
+        }
+      }
+    })
+ 
+  }
   //true is latest dates at top/ false is latest dates at bottom
   sortUp: boolean = false;
-  // sortTasks() {
-  //   this.sortUp = !this.sortUp;
-  //   if (this.sortUp){
-  //     this.taskList = this.taskList.sort((a, b) => {
-  //       return -new Date(a.dueDate).getTime() + new Date(b.dueDate).getTime();
-  //     });
-  //   }
-  //   else if (!this.sortUp) {
-  //     this.taskList = this.taskList.sort((a, b) => {
-  //       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-  //     })
-  //   }
-  // }
+  sortTasks() {
+    this.sortUp = !this.sortUp;
+    if (this.sortUp){
+      this.taskList = this.taskList.sort((a, b) => {
+        return -new Date(a.dueDate).getTime() + new Date(b.dueDate).getTime();
+      });
+    }
+    else if (!this.sortUp) {
+      this.taskList = this.taskList.sort((a, b) => {
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      })
+    }
+  }
   addTask() {
     this.edit = false;
-    console.log(this.taskObj)
+
     this.projectService.addTasks({
       taskName: this.taskObj.taskName,
       categoryType: this.taskObj.categoryType,
@@ -219,7 +215,8 @@ export class ProjectdetailsComponent implements OnInit {
       status: false,
       imageUrl: this.taskObj.imageUrl,
       qc1:{},
-      qc2:{}
+      qc2:{},
+      comments:{}
     })
     this.inputsForm.reset();
     this.sortUp = true;
@@ -239,7 +236,6 @@ export class ProjectdetailsComponent implements OnInit {
       this.categoryType = task.categoryType;
       this.assigned_to.user_name = task.assigned_to;
       this.taskObj = task;
-      console.log(this.taskObj)
     })
   
   }
@@ -264,7 +260,6 @@ export class ProjectdetailsComponent implements OnInit {
   }
   userTasks(){
     this.taskList = this.globalTasks.filter((task) => {
-      console.log(task)
       return task.assigned_to === this.user_key;
     })
   }

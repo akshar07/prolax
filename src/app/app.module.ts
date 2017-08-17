@@ -28,6 +28,7 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { UserService } from './home/user.service';
 import { ProjectService } from './home/project.service';
 import { ManagerService } from './home/manager.service';
+import { CommentsService } from './qc-results/comments.service';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import { ManagerService } from './home/manager.service';
       { enableTracing: false } // <-- debugging purposes only
     )
   ],
-  providers: [ PagerService,AuthService,LoginRouteGuard,UserService,ProjectService,ManagerService],
+  providers: [ PagerService,AuthService,LoginRouteGuard,UserService,ProjectService,ManagerService,CommentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

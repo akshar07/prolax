@@ -44,6 +44,7 @@ export class ProjectService {
         this.projects.remove(key);
         this.timelineArray=this.database.list(`/projecttimeline`);
         this.timelineArray.remove(key);
+        this.database.object(`/closeouts/${key}`).remove();
     }
     getTimeline(timelineId){
         return this.timelineTasks = this.database.list(`/projecttimeline/${timelineId}/tasks`)
@@ -86,5 +87,15 @@ export class ProjectService {
     editqC2(taskId,timelineId,QC2){
         this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc2`).update(QC2);
     }
-
+    closeProject(projectId,closeout){
+        let closeoutObs=this.database.object(`/closeouts/${projectId}`);
+        closeoutObs.set(closeout);
+    }
+    getCloseout(projectId){
+        return this.database.object(`/closeouts/${projectId}`);
+    }
+    editCloseOut(projectId,closeout){
+        let closeoutObs=this.database.object(`/closeouts/${projectId}`);
+        closeoutObs.update(closeout);
+    }
 }

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators,AbstractControl } from 
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { AuthService } from '../auth.service';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { CommentsService } from './comments.service';
 
 @Component({
   selector: 'app-qc-results',
@@ -12,18 +13,18 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class QcResultsComponent implements OnInit {
   commentsArray: any[];
   @Input()
-taskId:string;
+  taskId:string;
+  @Input()
+  timelineId:string;
 
-taskCommentsObservable: FirebaseListObservable<any[]>;
 database:any;
-  constructor(private fb:FormBuilder, private db: AngularFireDatabase,private authService:AuthService, private auth: AngularFireAuth) { 
-      this.database=db;
+  constructor(private fb:FormBuilder, private commentsService:CommentsService, private authService:AuthService, private auth: AngularFireAuth) { 
   }
 inputsForm:FormGroup;
 chat:string;
 user:string;
   ngOnInit() {
-  let user;
+    let user;
        this.auth.authState.subscribe((auth)=>{
           this.user= auth.displayName;
           this.setUser(auth.displayName)
@@ -32,20 +33,16 @@ user:string;
      this.inputsForm=this.fb.group({
        chat:this.chat
      });
-          this.taskCommentsObservable=this.database.list(`${this.taskId}/comments`);
-        this.taskCommentsObservable.subscribe((comment)=>{
-          this.commentsArray=comment;
-          console.log(this.commentsArray)
-        });
+     this.commentsService.getComments(this.timelineId,this.taskId)
+       .subscribe(comments=>this.commentsArray=comments);
   }
       setUser(user:string){
         this.user=user;
       }
 submitComment(){
  let d1 = new Date();
-
+ this.commentsService.postComment(this.timelineId,this.taskId,{chat:this.chat,user:this.user,date:d1.toDateString()});
   console.log(this.chat)
- this.taskCommentsObservable.push({chat:this.chat,user:this.user,date:d1.toDateString()});
  this.inputsForm.reset();
 }
 

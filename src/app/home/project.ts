@@ -10,4 +10,5 @@ export class Project {
   startDate:string=""
   endDate:string="";
   combined?: string = `${this.manager}${this.project_number}${this.title}`;
+  timeline_key?:"";
 }
