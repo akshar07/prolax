@@ -37,7 +37,9 @@ export class TasksTimelineComponent implements OnInit {
    drawTimeline(){
     this.load=true;
     setTimeout(()=>{this.render();this.load=false;},2000);
-    
+   }
+   quickRender(){
+     this.render()
    }
    getTasks(){
     this.userTasks=[];
@@ -64,7 +66,7 @@ export class TasksTimelineComponent implements OnInit {
     this.userTasks=[];
     this.formatTasks( this.tasks);
     this.destroy();
-    this.drawTimeline();
+    this.quickRender();
   }
   showAll() {
     console.log(this.allTasks)
@@ -72,7 +74,7 @@ export class TasksTimelineComponent implements OnInit {
     this.userTasks=[];
     this.formatTasks( this.tasks);
     this.destroy();
-    this.drawTimeline();
+    this.quickRender();
   }
   filterMilestoneCategory() {
     console.log(this.allTasks)
@@ -82,7 +84,7 @@ export class TasksTimelineComponent implements OnInit {
     this.userTasks=[];
     this.formatTasks( this.tasks);
     this.destroy();
-    this.drawTimeline();
+    this.quickRender();
   }
   ngOnInit() {
     this.getTasks();

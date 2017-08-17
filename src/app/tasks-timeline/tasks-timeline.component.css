@@ -1,3 +1,4 @@
+
 @keyframes lds-cube {
     0% {
       -webkit-transform: scale(1.5);
@@ -71,4 +72,8 @@
   }
   .time-container{
     height:20px;
+  }
+  .vis-time-axis .vis-grid.vis-saturday,
+  .vis-time-axis .vis-grid.vis-sunday {
+    background: gray;
   }

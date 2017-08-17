@@ -266,6 +266,7 @@ export class ProjectdetailsComponent implements OnInit {
     this.projectService.deleteTask();
     this.sortUp = true;
     this.timelineCmp.destroy();
+    this.timelineCmp.getTasks();
     this.timelineCmp.drawTimeline();
   }
   userTasks(){
