@@ -29,6 +29,7 @@ import { UserService } from './home/user.service';
 import { ProjectService } from './home/project.service';
 import { ManagerService } from './home/manager.service';
 import { CommentsService } from './qc-results/comments.service';
+import { TasksTimelineComponent } from './tasks-timeline/tasks-timeline.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CommentsService } from './qc-results/comments.service';
     QcResultsComponent,
     CloseoutComponent,
     AddUSersComponent,
-    TimelineComponent
+    TimelineComponent,
+    TasksTimelineComponent
   ],
   imports: [
     BrowserModule,

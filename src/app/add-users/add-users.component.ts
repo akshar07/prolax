@@ -26,7 +26,6 @@ export class AddUSersComponent implements OnInit {
   }
   constructor(public authService: AuthService, private router:Router,db: AngularFireDatabase) {
   this.database=db;
- 
    }
 userObj$;
 userKey:string;

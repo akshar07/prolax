@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
 import { ProjectService } from '../home/project.service';
 @Component({
   selector: 'app-closeout',
@@ -12,14 +11,13 @@ export class CloseoutComponent implements OnInit {
   @Input()
   isManager:string;
   @Input()
-projectId:string;
-
-database: AngularFireDatabase;
-inputsForm:FormGroup;
-
+  projectId:string;
+  
+  inputsForm:FormGroup;
   projectArray: any[];
 
   constructor(private fb:FormBuilder, private projectService:ProjectService) { 
+ 
   }
   closeOut:{
     projectBackground:string,
@@ -37,6 +35,7 @@ inputsForm:FormGroup;
     this.onComplete.emit(bool);
   }
   ngOnInit() {
+
     console.log(this.projectId)
     this.closeOut={
         projectBackground:"",
@@ -72,6 +71,7 @@ inputsForm:FormGroup;
     }
    })
   }
+  
 key="";
 submitProjectCloseout(bool){
   this.projectService.closeProject(this.projectId,{

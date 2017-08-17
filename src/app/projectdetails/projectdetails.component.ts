@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { ActivatedRoute } from "@angular/router";
 import { Location } from '@angular/common';
@@ -9,6 +9,7 @@ import { AuthService } from '../auth.service';
 import { Task } from './task';
 import { ProjectService } from '../home/project.service';
 import { UserService } from '../home/user.service';
+import { TasksTimelineComponent } from '../tasks-timeline/tasks-timeline.component';
 
 @Component({
   selector: 'app-projectdetails',
@@ -16,6 +17,7 @@ import { UserService } from '../home/user.service';
   styleUrls: ['./projectdetails.component.css']
 })
 export class ProjectdetailsComponent implements OnInit {
+  @ViewChild(TasksTimelineComponent) timelineCmp:TasksTimelineComponent;
   projectManager: any;
   project_name: any;
   projectClient: any;
@@ -159,15 +161,18 @@ export class ProjectdetailsComponent implements OnInit {
   filterTaskCategory() {
     this.taskList = this.globalTasks.filter((task) => {
       return task.categoryType === "Task";
-    })
+    });
+    this.timelineCmp.filterTaskCategory();
   }
   filterMilestoneCategory() {
     this.taskList = this.globalTasks.filter((task) => {
       return task.categoryType === "Milestone";
-    })
+    });
+    this.timelineCmp.filterMilestoneCategory();
   }
   showAll() {
     this.taskList = this.globalTasks;
+    this.timelineCmp.showAll();
   }
   custom(array: any) {
     let userArray;
@@ -203,7 +208,6 @@ export class ProjectdetailsComponent implements OnInit {
   }
   addTask() {
     this.edit = false;
-
     this.projectService.addTasks({
       taskName: this.taskObj.taskName,
       categoryType: this.taskObj.categoryType,
@@ -220,7 +224,9 @@ export class ProjectdetailsComponent implements OnInit {
     })
     this.inputsForm.reset();
     this.sortUp = true;
-    // this.sortTasks();
+    this.timelineCmp.destroy();
+    this.timelineCmp.getTasks();
+    this.timelineCmp.drawTimeline();
   }
   resetForm() {
     this.inputsForm.reset();
@@ -252,11 +258,15 @@ export class ProjectdetailsComponent implements OnInit {
       imageUrl: this.taskObj.imageUrl,
     })
     this.sortUp = true;
+    this.timelineCmp.destroy();
+    this.timelineCmp.getTasks();
+    this.timelineCmp.drawTimeline();
   }
   deleteTask() {
     this.projectService.deleteTask();
     this.sortUp = true;
- 
+    this.timelineCmp.destroy();
+    this.timelineCmp.drawTimeline();
   }
   userTasks(){
     this.taskList = this.globalTasks.filter((task) => {
