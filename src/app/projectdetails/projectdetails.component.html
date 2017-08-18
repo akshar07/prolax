@@ -30,7 +30,7 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" (click)="resetForm()">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" clean>&times;</button>
                     <h4 class="modal-title" *ngIf="!edit">Create Task</h4>
                     <h4 class="modal-title" *ngIf="edit">Edit Task</h4>
                 </div>
@@ -59,7 +59,7 @@
                         <label class="control-label col-sm-4" for="pwd">Assign To</label>
                         <div class="col-sm-6"> 
                             <select type="number" [(ngModel)]="assigned_to" formControlName="assigned_to" (ngModelChange)="toNumberUsers()">
-                                <option *ngFor="let user of userList | async" [ngValue]="user" >{{user?.user_name}}</option>
+                                <option *ngFor="let user of userList | async" [ngValue]="user" [selected]="assigned_to.user_name===user.user_name">{{user?.user_name}}</option>
                             </select>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
                 </div>
 
                 <!-- timelineItem-middle -->
-                <div class="timelineItem-body  col-lg-8" [ngClass]="setColor(item.dueDate,item.status)<=2 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':'coming')">
+                <div class="timelineItem-body  col-lg-8" [ngClass]="setColor(item.dueDate,item.status)==1 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':(setColor(item.dueDate,item.status)==-1 ?'done':'coming'))">
                     <span></span>
                     <img class="img-circle timeline-avatar" [src]="item.imageUrl">
                     <div class="header">

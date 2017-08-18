@@ -1,5 +1,5 @@
 h3, .desc{
-    font-family: 'Dosis', sans-serif;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
     text-transform: uppercase;
 }
 h3 span a{
@@ -77,14 +77,28 @@ h3 span a{
     border-color: #EF6666;
     transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
 }
-
+.coming:hover {
+    border-color: #888888;
+    transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
+}
+.coming:hover:before{
+    content: "";
+    position: absolute;
+    left: -18px;
+    top: -28px;
+    border: solid transparent;
+    border-right-color: #888888;
+    border-width: 8px;
+}
 .near:hover .header{
   color:#fff;
 }
 .missed:hover .header{
     color:#fff;
   }
-
+  .coming:hover .header{
+    color:#fff;
+  }
 .timelineItem-body span{
     content: "";
     display: block;
@@ -137,6 +151,7 @@ position: relative !important;
 }
 .details{
      padding-bottom:15px; 
+     font-size: 13px;
 }
 
 .itemContent{
@@ -191,3 +206,4 @@ textarea{
 .closeout-box{
     margin-bottom:40px;
 }
+

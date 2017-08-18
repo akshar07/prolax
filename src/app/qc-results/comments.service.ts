@@ -10,10 +10,10 @@ export class CommentsService {
         this.database=db;
     }
     postComment(timelineId,taskId,comment){
-        this.CommentsObs=this.database.list(`/projecttimeline/${timelineId}/tasks/${taskId}/comments`);
+        this.CommentsObs=this.database.list(`/task-logs/${timelineId}/${taskId}`);
         this.CommentsObs.push(comment);
     }
     getComments(timelineId,taskId){
-        return this.database.list(`/projecttimeline/${timelineId}/tasks/${taskId}/comments`);
+        return this.database.list(`/task-logs/${timelineId}/${taskId}`);
     }
 }

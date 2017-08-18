@@ -68,7 +68,19 @@ export class ProjectdetailsComponent implements OnInit {
     imageUrl: this.assigned_to.imageUrl,
   }
   clean() {
-    this.inputsForm.reset();
+    this.assigned_to = { $key: "", imageUrl: "", user_name: "" } 
+    this.categoryType=null;
+    this.taskObj = {
+      taskName: "",
+      categoryType: null,
+      assigned_to: "",
+      startDate: null,
+      dueDate: null,
+      details: "",
+      hours: 0,
+      status: false,
+      imageUrl:""
+    }
   }
   categoryArray: Array<Object> = [
     { num: 0, name: "Task" },
@@ -80,15 +92,21 @@ export class ProjectdetailsComponent implements OnInit {
   if(t-d<0 && complete==false){
     return 1000;
   }
+  else if(t-d<=2 && t-d>=0){
+    return 1
+  }
+  else if(d-t>0 && complete==true){
+    return -1;
+  }
   else if(t-d<0 && complete==true){
     return 9999;
   }
-  return t-d;
   }
   toNumber() {
     this.taskObj.categoryType = this.categoryType
   }
   toNumberUsers() {
+    console.log(this.assigned_to)
     this.taskObj.assigned_to = this.assigned_to.user_name
     this.taskObj.imageUrl = this.assigned_to.imageUrl;
   }
@@ -229,7 +247,20 @@ export class ProjectdetailsComponent implements OnInit {
     this.timelineCmp.drawTimeline();
   }
   resetForm() {
-    this.inputsForm.reset();
+    this.assigned_to =  { $key: "", imageUrl: "", user_name:this.taskObj.assigned_to } 
+    this.taskObj={
+      taskName: "",
+      categoryType: "",
+      assigned_to: "",
+      startDate: new Date(),
+      dueDate: new Date(),
+      details: "",
+      hours: 0,
+      status: false,
+      imageUrl: this.assigned_to.imageUrl,
+    }
+   
+    console.log(this.assigned_to)
   }
   taskId: any;
   edit: boolean = false;
@@ -239,9 +270,11 @@ export class ProjectdetailsComponent implements OnInit {
     let taskToget;
     let taskToGetObs = this.projectService.getTask(taskKey,this.projectID);
     taskToGetObs.subscribe((task) => {
+      this.taskObj = task;
       this.categoryType = task.categoryType;
       this.assigned_to.user_name = task.assigned_to;
-      this.taskObj = task;
+      console.log(this.assigned_to)
+      console.log(this.taskObj)
     })
   
   }

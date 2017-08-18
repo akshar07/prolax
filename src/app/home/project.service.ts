@@ -68,24 +68,24 @@ export class ProjectService {
         this.taskObs.remove();
     }
     addQC1(timelineId,taskId,QC1){
-        this.taskQC1Observable=this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc1`);
+        this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
         this.taskQC1Observable.set(QC1);
     }
     getQC1(timelineId,taskId){
-        return this.taskQC1Observable=this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc1`);
+        return this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
     }
     editqC1(taskId,timelineId,QC1){
-        this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc1`).update(QC1);
+        this.database.object(`/QC1/${timelineId}/${taskId}`).update(QC1);
     }
     addQC2(timelineId,taskId,QC2){
-        this.taskQC1Observable=this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc2`);
+        this.taskQC1Observable=this.database.object(`/QC2/${timelineId}/${taskId}`);
         this.taskQC1Observable.set(QC2);
     }
     getQC2(timelineId,taskId){
-        return this.taskQC1Observable=this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc2`);
+        return this.taskQC1Observable=this.database.object(`/QC2/${timelineId}/${taskId}`);
     }
     editqC2(taskId,timelineId,QC2){
-        this.database.object(`/projecttimeline/${timelineId}/tasks/${taskId}/qc2`).update(QC2);
+        this.database.object(`/QC2/${timelineId}/${taskId}`).update(QC2);
     }
     closeProject(projectId,closeout){
         let closeoutObs=this.database.object(`/closeouts/${projectId}`);
