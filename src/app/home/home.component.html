@@ -21,14 +21,14 @@
 </div>
 <div class="timeline">
 
-   <div *ngIf="userkey">
+   <div>
      <app-timeline [Key]="userkey"></app-timeline>
   </div> 
 
 </div>
   <div class="home-wrapper" *ngIf="isManager">
       <div  class="col-lg-12 sus-header">
-        <h1 class="page-header">Project List {{isManager}} <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
+        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
         
         <!-- add new project -->
         <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
@@ -47,12 +47,13 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th class="col-lg-2">Project Number </th>
+              <th class="col-lg-1"># </th>
               <th class="col-lg-3">Project Name </th>
-              <th class="col-lg-2">Project Manager </th>
-              <th class="col-lg-2">Client </th>
-              <th class="col-lg-2">Climate Zone</th>
-              <th class="col-lg-3"> state </th>
+              <th class="col-lg-2"> Manager </th>
+              <th class="col-lg-1">Client </th>
+              <th class="col-lg-1">CZ</th>
+              <th class="col-lg-2"> Market Sector </th>
+              <th class="col-lg-3">Scope </th>
               <th class="col-lg-2" *ngIf="isAdmin==='true'">Action</th>
             </tr>
           </thead>
@@ -63,8 +64,10 @@
               <td (click)="goToProject(res)">{{res.manager}}</td>
               <td (click)="goToProject(res)">{{res.client}}</td>
               <td (click)="goToProject(res)">{{res.climate_zone}}</td>
-              <td *ngIf="res.projectStatus">Closed</td>
-              <td *ngIf="!res.projectStatus">Open</td>
+              <!-- <td *ngIf="res.projectStatus">Closed</td>
+              <td *ngIf="!res.projectStatus">Open</td> -->
+              <td (click)="goToProject(res)">{{res.market_sector}}</td>
+              <td (click)="goToProject(res)">{{res.category}}</td>
               <td *ngIf="isAdmin==='true'"><button type="button" class="btn btn-default btn-xs"data-toggle="modal" data-target="#delete" (click)="getProject(res.$key,res)">Delete</button></td>
             </tr>
           </tbody>
@@ -131,12 +134,9 @@
            <div class="form-group" >
             <label class="control-label col-sm-4" for="pwd">Manager Name:</label>
             <div class="col-sm-6"> 
-              <input  type="text" 
-                      class="form-control" 
-                      placeholder="Enter Manager Name"
-                      formControlName="manager"
-                      [(ngModel)]="manager"
-                      name="manager">
+              <select type="text" [(ngModel)]="manager" formControlName="manager">
+                  <option *ngFor="let manager of allManagers|async" [ngValue]="manager.user_name">{{manager.user_name}}</option>
+              </select>
               <p *ngIf="inputsForm.controls.manager.dirty && inputsForm.controls.manager?.errors" class="formInvalid">Manager is Required</p>
             </div>
           </div>
@@ -149,10 +149,37 @@
                       formControlName="client"
                       [(ngModel)]="client"
                       name="client">
-                        <p *ngIf="inputsForm.controls.client.dirty && inputsForm.controls.client?.errors" class="formInvalid">Client is Required</p>
-
+                <p *ngIf="inputsForm.controls.client.dirty && inputsForm.controls.client?.errors" class="formInvalid">Client is Required</p>
             </div>
           </div>
+          <div class="form-group" >
+            <label class="control-label col-sm-4" for="pwd">Service:</label>
+            <div class="col-sm-6"> 
+              <select type="text" [(ngModel)]="category" formControlName="categoryType" (ngModelChange)="Prcategory()">
+                <option *ngFor="let category of projectCategory" [ngValue]="category">{{category}}</option>
+              </select>
+          </div>
+          </div>
+          <div class="form-group" >
+              <label class="control-label col-sm-4" for="pwd">Market Sector:</label>
+              <div class="col-sm-6"> 
+                <select type="text" [(ngModel)]="selectedSector" formControlName="market_sector">
+                  <option *ngFor="let sector of market_sector" [ngValue]="sector">{{sector}}</option>
+                </select>
+            </div>
+            </div>
+            <div class="form-group" >
+                <label class="control-label col-sm-4" for="pwd">Project Area</label>
+                <div class="col-sm-6"> 
+                    <input  
+                    (ngModelChange)="ProjectArea = $event" 
+                    type="number" 
+                    name="ProjectArea"
+                    formControlName="area">
+                    <p *ngIf="inputsForm.controls.area.dirty && inputsForm.controls.area?.errors" class="formInvalid">Area is Required</p>
+                  
+              </div>
+              </div>
           <div class="form-group" >
             <label class="control-label col-sm-4" for="pwd">Climate Zone:</label>
             <div class="col-sm-6"> 
@@ -205,3 +232,5 @@
 
   </div>
 </div>
+
+<a (click)="goToLearning()" class="learning">Lessons Learned</a>

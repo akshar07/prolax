@@ -6,4 +6,5 @@ startDate:Date;
 dueDate:Date;
 timeline_key:string;
 details:string;
+user_short:string;
 }

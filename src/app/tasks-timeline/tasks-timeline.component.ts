@@ -55,7 +55,8 @@ export class TasksTimelineComponent implements OnInit {
       tasks.forEach((task,i)=>{
       this.userTasks.push({
          content:task.taskName,
-         start:task.dueDate
+         start:task.dueDate,
+         className:task.categoryType
        })
        })
    }

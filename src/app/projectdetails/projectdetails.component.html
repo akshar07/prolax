@@ -20,6 +20,26 @@
 
         </div>
      </div>
+     <div id="tag" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+    
+                <!-- Modal content-->
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Tag User</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Tag User to this task?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"(click)="tagUser()" >Yes</button>
+                </div>
+                </div>
+    
+            </div>
+         </div>
     <div class="timeline-wrapper" >
         <h3>{{project_number}} // {{project_name}}</h3>
         <p class="desc"><b> Project Manager:</b> {{projectManager}}</p>
@@ -155,11 +175,7 @@
                     <button type="button" class="btn btn-default btn-sm"  (click)="filterTaskCategory()">Tasks</button>
                     <button type="button" class="btn btn-default btn-sm"  (click)="filterMilestoneCategory()">Milestones</button>
                 </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm" (click)="filterInProcressCategory()">InProgress</button>
-                    <button type="button" class="btn btn-default btn-sm" (click)="filterFinishedCategory()">Finished</button>
-                    <button type="button" class="btn btn-default btn-sm" >Attention</button>
-                </div>
+              
                 <button type="button" class="btn btn-default btn-sm"  (click)="userTasks()">My Tasks</button>   
                 <button type="button" class="btn btn-default btn-sm"  (click)="showAll()">All</button>                     
             </div>    
@@ -238,8 +254,8 @@
                     <button type="button" 
                             class="btn btn-default btn-sm btn-circle action-buttons col-lg-6" 
                             (click)="getTask(item.$key)"
-                            data-toggle="modal" data-target="#delete">
-                            <span class="glyphicon glyphicon-calendar"></span>
+                            data-toggle="modal" data-target="#tag">
+                            <span class="glyphicon glyphicon-tag"></span>
                     </button>
                     <button type="button" 
                             class="btn btn-default btn-sm btn-circle action-buttons col-lg-6 " 
@@ -269,12 +285,18 @@
                 <!-- timelineItem-middle -->
                 <div class="timelineItem-body closeout col-lg-8">
                     <div class="header">
-                        <strong class="text-capitalize"> {{timelineToShow?.project_number}} // {{timelineToShow?.project_name}} - Close Out </strong> 
+                        <strong class="text-capitalize"> {{timelineToShow?.project_number}} // {{marketSector}}{{timelineToShow?.project_name}} - Close Out </strong> 
                         <button type="button" class="btn btn-sm action-buttons pull-right" data-toggle="collapse"data-target="#closeout">+</button>
                     </div>
                     <div class="clearfix"></div>
                    <div id="closeout" class="collapse collapse-content ">
-                      <app-closeout [projectId]="projectID" [isManager]="isManager" (onComplete)="onComplete($event)"></app-closeout>
+                      <app-closeout [projectId]="projectID" 
+                                    [isManager]="isManager" 
+                                    [projectName]="project_name" 
+                                    [projectCategory]="projectCategory" 
+                                    [marketSector]="marketSector"
+                                    [projectArea]="projectArea"
+                                    (onComplete)="onComplete($event)"></app-closeout>
                 </div>
                   
 

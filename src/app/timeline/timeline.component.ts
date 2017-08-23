@@ -7,6 +7,9 @@ import 'rxjs/Rx'
 
 import { Project } from '../home/project';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { ProjectService } from '../home/project.service';
+import { UserService } from '../home/user.service';
+import { ManagerService } from '../home/manager.service';
 declare var vis: any;
 
 
@@ -16,82 +19,61 @@ declare var vis: any;
   styleUrls: ['./timeline.component.css']
 })
 export class TimelineComponent implements OnInit {
-@Input()
+  currentUser: string;
+  userTasks: any[];
+  @Input()
   Key:string;
-  database: AngularFireDatabase;
   projectsTimeline: any=[];
-  projectsName: any;
   groups: any;
   timeline: any;
   name:string;
-  constructor(private element: ElementRef,db: AngularFireDatabase,) {
-  this.database=db;
+  constructor(private element: ElementRef,private projectService:ProjectService,private managerService:ManagerService) {
   }
     taskA=[];
     items=new vis.DataSet([]);
     options:any;
   render(){  
-  this.items = new vis.DataSet(this.projectsTimeline);
+  this.items = new vis.DataSet(this.userTasks);
   this.options = {start:new Date()};  
   this.timeline = new vis.Timeline(this.element.nativeElement, this.items,this.groups ,this.options);
     // Create a Timeline
     let startDate=new Date();
     let endDate= startDate.setDate(startDate.getDate()+8*24*60*60*1000);
-  this.items.push()
   }
 destroy(){
    this.timeline.destroy();
 }
-getCloseout(projects:Array<Project>){
-  this.items=[];
-  this.projectsTimeline=[];
-  this.projectsName=[];
-  let filteredProjects=projects.filter((project)=>{
-    let ukey="";
-    let isUserproject:boolean=false;
-    let tempKey=this.Key
-    Object.keys(project.assigned_to).forEach(function(key,index) {
-     
-      ukey=project.assigned_to[key].assigned_to;
-      console.log(ukey)
-        if(tempKey===ukey){
-          isUserproject=true;
-    
-        }
-    })
-     return isUserproject;
-  })
-  filteredProjects.forEach((project,i)=>{
-  let tasksA=[];
-  let userTasks=[];
-  let tasks= this.database.list(`/projecttimeline/${project.timeline_key}/tasks`);
-  tasks.subscribe(task=>{
-      task.forEach((item)=>{
-        tasksA.push(item);
-      
-        userTasks=tasksA;
-      });  
-  userTasks.forEach((task)=>{
-    this.projectsTimeline.push({
-      content:task.taskName,
-      start:task.dueDate,
-      group:i,
-    })
-    })
-      tasksA=[];
-  })
-  this.projectsName.push(project.title);
-  console.log(this.projectsName)
-  })
-this.groups = new vis.DataSet();
-  for (let g=0; g<this.projectsName.length;g++) {
-    this.groups.add({id: g, content:this.projectsName[g]});
-  }
- console.log(this.projectsTimeline)
-  setTimeout(()=>this.render(),500)
-}
+
+// managerTasks(){
+//   this.managerService.loggedInUser()
+//   .subscribe((user)=>{
+//      this.currentUser=user.email;
+//      let $pos =  this.currentUser.indexOf('@');
+//      this.currentUser = this.currentUser.substr(0, $pos);
+//      this.currentUser= this.currentUser.charAt(0).toUpperCase()+ this.currentUser.charAt(1).toUpperCase() + this.currentUser.slice(2);
+//      this.projectService.getManagerTasks(this.currentUser)
+//      .subscribe((userTasks)=>{
+//        this.userTasks=userTasks;
+//        console.log(this.userTasks)
+//      })
+//    })
+//   setTimeout(()=>this.render(),1000);
+// }
   ngOnInit() { 
- this.items = this.database.list('/projects').take(1).toPromise()
-             .then((res)=>{this.getCloseout(res)},err=>alert(err))
+   this.managerService.loggedInUser()
+     .subscribe((user)=>{
+        this.currentUser=user.email;
+        let $pos =  this.currentUser.indexOf('@');
+        this.currentUser = this.currentUser.substr(0, $pos);
+        this.currentUser= this.currentUser.charAt(0).toUpperCase()+ this.currentUser.charAt(1).toUpperCase() + this.currentUser.slice(2);
+        this.projectService.getUserTasks(this.currentUser)
+        .subscribe((userTasks)=>{
+          this.userTasks=userTasks;
+          console.log(this.userTasks)
+        })
+      })
+     setTimeout(()=>this.render(),1000);
+     
+    //  this.managerTasks()
   }
 }

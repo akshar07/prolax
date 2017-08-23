@@ -17,3 +17,22 @@ table td{
     color:red; 
     font-size: 13px;
 }
+.form-group select{
+    WIDTH: 100%;
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+.form-group input{
+    WIDTH: 100%;
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+.learning{
+    cursor: pointer;
+}
+.vis-timeline {
+    width:100% !important;
+    margin-left: 186px;
+  }

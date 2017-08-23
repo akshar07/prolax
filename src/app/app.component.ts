@@ -14,7 +14,9 @@ export class AppComponent implements OnInit   {
 
   constructor(  public authService: AuthService,
                 private router:Router,
-                private auth: AngularFireAuth,private http:Http){
+                private auth: AngularFireAuth,
+                private http:Http
+                ){
             
         if(this.auth.authState){
        this.auth.authState.subscribe((auth)=>{
@@ -26,17 +28,14 @@ export class AppComponent implements OnInit   {
           }
        })
       }
-  
   }
   logout(){
     this.authService.logout();
   }
-
   goToProjects(){
   this.router.navigate(['home']);
   }
   checkLogin(){
-
     if(this.authService.isLoggedIn){
       return true;
     }
@@ -44,7 +43,6 @@ export class AppComponent implements OnInit   {
       return false;
     }
   }
-
    ngOnInit() {}
     
 

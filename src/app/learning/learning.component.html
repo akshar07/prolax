@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="col-lg-1">
+        <label for="category">By Scope</label>
+    </div>
+    <div class="col-lg-3">
+        <select type="text" [(ngModel)]="category" id="category"(ngModelChange)="filter()">
+                <option *ngFor="let category of projectCategory" [ngValue]="category">{{category}}</option>
+        </select>
+    </div>
+    <div class="col-lg-1">
+            <label for="sector">By Sector</label>
+        </div>
+        <div class="col-lg-3">
+            <select type="text" [(ngModel)]="selectedSector" (ngModelChange)="filter()" id="sector">
+                    <option *ngFor="let sector of market_sector" [ngValue]="sector">{{sector}}</option>
+            </select>
+        </div>
+        <div class="col-lg-1">
+                <label for="category">By Area</label>
+            </div>
+            <div class="col-lg-3">
+                <select type="text" [(ngModel)]="selectedArea" (ngModelChange)="filter()" id="area">
+                        <option *ngFor="let area of areas" [ngValue]="area.val">{{area.text}}</option>
+                </select>
+            </div>
+    <div class="clearfix"></div>
+   <hr>
+  
+<div class="learnings">
+    <ul>
+        <li *ngFor="let learnings of projectLearnings">
+            <p><b>{{learnings.project_name}}</b></p>
+            <p>{{learnings.Lessons}}</p>
+        </li>
+    </ul>
+</div>
+</div>

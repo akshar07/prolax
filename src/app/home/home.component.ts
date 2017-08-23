@@ -22,7 +22,8 @@ import { ManagerService } from './manager.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit   {
-  @ViewChild(TimelineComponent) timelineCmp:TimelineComponent;
+  userTasks: any[];
+  @ViewChild(TimelineComponent) timelineCmp: TimelineComponent;
 
   projectsName: Array<string>=[];
   userkey: string;
@@ -47,11 +48,32 @@ export class HomeComponent implements OnInit   {
               private fb:FormBuilder,
               private managerService:ManagerService
               ) {
-                    // this.database=db;
-                    // this.timeline = db.list('/projecttimeline');
               
                 }
 projectsTimeline:Array<any>=[];
+//project category
+projectCategory=["Energy Modeling",
+                "CFD",
+                "Daylighting",
+                "LEED consulting",
+                "Compliance modeling",
+                "Hygrothermal analysis",
+                "Heat Transfer analysis",
+                "Envelop Consulting",
+                "Sustainability Strategies"];
+selectedSector:string;
+market_sector=["Aviation",
+               "Commercial",
+               "Cultural/Institutional",
+               "Education K-12",
+               "Government",
+               "Healthcare",
+               "Higher Education",
+               "Hospitality/Gaming",
+               "Mission Critical",
+               "Sports",
+               "Transportation"];
+ProjectArea:number;
 // add project
   addToList() {
     let project_key=this.projectService.addProject(
@@ -67,6 +89,9 @@ projectsTimeline:Array<any>=[];
           startDate:this.startDate,
           endDate:this.endDate,
           combined:this.title+this.manager+this.project_number,
+          category:this.category,
+          market_sector:this.selectedSector,
+          area:this.ProjectArea
         }
     )
     this.projectsTimeline=[];
@@ -75,6 +100,9 @@ projectsTimeline:Array<any>=[];
       project_number:this.project_number,
       manager:this.manager,
       client:this.client,
+      category:this.category,
+      market_sector:this.selectedSector,
+      area:this.ProjectArea,
       tasks:[]
     },project_key)
   }
@@ -114,37 +142,8 @@ projectsTimeline:Array<any>=[];
   }
 isManager:string;
   //authenticate manager
-  // checkManager(manager:Array<Manager>){
-  //   this.authService.user.subscribe((u)=>{
-  //    this.setCurrentUser(u.email, manager)
-  //   })
-  // }
-  // setCurrentUser(user:string,manager:Array<Manager>){
-  //   this.currentUser=user;
-  //    for(let i=0;i<manager.length; i++){
 
-  //     if(manager[i].email.toLowerCase()===user){
-  //       this.userkey=manager[i].$key;
-  //        console.log(this.userkey)
-    
-  //       if(manager[i].manager_access){
-  //         this.isManager="true";
-  //         this.params="aabsvchfo134852f"
-  //          if(manager[i].admin_access){
-  //         this.isAdmin="true";
-  //         return
-  //       }
-  //       }
-       
-  //     else{
-  //      this.isManager= "false";
-  //     this.isAdmin= "false";
-  //     this.params="aabsvchfo1egsgu432f"
-  //     }
-  //     }
-     
-  //   }
-  // }
+
   addUser(){
     this.router.navigate(["addUsers"])
   }
@@ -193,12 +192,17 @@ setPage(page: number) {
   this.pagedItems = this.projectTitles.slice(this.pager.startIndex, this.pager.endIndex + 1);
 
 }
-
+allManagers;
 filter:Project=new Project();
 //child routing
   goToProject(project) {
     this.router.navigate(['projectDetail', project.$key,`${this.params}`]);
   };
+  Prcategory(){
+  }
+  getManagers(){
+    this.allManagers=this.projectService.getAllManagers();
+  }
 inputsForm:FormGroup;
 startDate:Date=new Date();
 title:string;
@@ -207,7 +211,8 @@ project_number:string;
 endDate:Date;
 status:string;
 client:string;
-climate:string
+climate:string;
+category:string;
   ngOnInit() {
     this.inputsForm=this.fb.group({
       project_number:[this.project_number,[Validators.required]],
@@ -216,27 +221,35 @@ climate:string
        startDate:[this.startDate,[Validators.required]],
        endDate:[this.startDate,[Validators.required]],
        client:[this.client,[Validators.required]],
-       climate:[this.climate,[Validators.required]]
+       climate:[this.climate,[Validators.required]],
+       categoryType:[this.category],
+       market_sector:[this.selectedSector],
+       area:[this.ProjectArea]
     });
+    this.getManagers()
   //get users and check manager
   this.checkIfManager()
   let userObs=this.userService.getUsers();
   userObs.subscribe((user)=>{
   this.Managers=user;
-  // this.checkManager(this.Managers);
   })
   //get projects
   let projectObs=this.projectService.getProjects();
   projectObs.subscribe((project)=>{
     this.projectTitles=project;
     this.setPage(1);
-  })
+  });
+
+  //get tasks for timelin
   this.authService.user.subscribe((val=>{this.routeThis(val)}))
    }
   routeThis(val){
       if(!val){
       this.router.navigate([""]);
     }
+  }
+  goToLearning(){
+    this.router.navigate(["learning"])
   }
 checkDate(){
  

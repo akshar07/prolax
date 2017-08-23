@@ -1,0 +1,11 @@
+.learnings ul{
+    list-style: none;
+    padding:0;
+}
+.learnings{
+    margin-top: 30px;
+}
+.learnings ul li{
+    border-bottom: 1px solid #ccc;
+    margin-top: 10px;
+}

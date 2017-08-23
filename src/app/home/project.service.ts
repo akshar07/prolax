@@ -53,7 +53,7 @@ export class ProjectService {
         return this.database.object(`/projecttimeline/${timelineId}`)
     }
     addTasks(task){
-        this.timelineTasks.push(task)
+       return this.timelineTasks.push(task).key;
     }
     getTask(key,timelineKey){
         this.timelineKey=timelineKey;
@@ -97,5 +97,65 @@ export class ProjectService {
     editCloseOut(projectId,closeout){
         let closeoutObs=this.database.object(`/closeouts/${projectId}`);
         closeoutObs.update(closeout);
+    }
+    //check
+    addTimelineTasks(user,assigned_to,projectId,project_name,task_key,dueDate,task_name){
+        let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/projectName`)
+            x.set(project_name);
+        let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
+            y.set(task_key);
+        }
+    editTimelineTasks(user_before,user,assigned_to,projectId,task_key){
+        let y=this.database.object(`userTasks/${user_before}/managing_projects/${projectId}/staffList/${user_before+task_key}`)
+        y.remove();
+        let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
+        x.set(task_key);
+    }
+    addTasksForMe(user,projectId,project_name,task_key,dueDate,task_name){
+        let z=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}`)
+        z.set({
+            start:dueDate,
+            content:task_name
+        })
+    }
+    editTasksForMe(user_before,user,projectId,task_key,dueDate,task_name){
+        alert(user_before)
+        let z=this.database.object(`userTasks/${user_before}/assigned_tasks/${task_key}/`)
+        z.remove();
+        let x=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}/`)
+        x.set({
+            start:dueDate,
+            content:task_name
+        });
+    }
+    deleteTimeLineTasks(user,projectId,project_name,task_key){
+        let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${user+task_key}`)
+        y.remove(); 
+    }
+    deleteTasksForMe(user,task_key){
+        let z=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}/`)
+        z.remove();
+    }
+    getUserTasks(userKey){
+        return this.database.list(`/userTasks/${userKey}/assigned_tasks`)
+    }
+    getManagerTasks(userKey){
+        return this.database.list(`/userTasks/`)
+    }
+    getAllManagers(){
+        return this.database.list(`/users`,{
+            query:{
+                orderByChild:'manager_access',
+                equalTo:true
+            }
+        })
+    }
+    //end
+    getLearningProjects(){
+        return this.database.list(`/closeouts`)
+    }
+    tagUser(projectId,taskId,userId,taskName,dueDate){
+        let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
+        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId});
     }
 }

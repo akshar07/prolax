@@ -2,3 +2,9 @@
 body{
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
+.vis-time-axis .vis-grid.vis-minor {
+    border-color: #fff
+}
+.Milestone{
+    background-color:#FFFF6E;
+}

@@ -7,12 +7,19 @@ import { ProjectService } from '../home/project.service';
   styleUrls: ['./closeout.component.css']
 })
 export class CloseoutComponent implements OnInit {
+  @Input()
+  projectName: any;
+  @Input()
+  projectCategory: any;
   @Output() onComplete = new EventEmitter<boolean>();
   @Input()
   isManager:string;
   @Input()
   projectId:string;
-  
+  @Input()
+  projectArea:number;
+  @Input()
+  marketSector:string;
   inputsForm:FormGroup;
   projectArray: any[];
 
@@ -36,7 +43,7 @@ export class CloseoutComponent implements OnInit {
   }
   ngOnInit() {
 
-    console.log(this.projectId)
+    console.log(this.projectArea +" "+this.marketSector)
     this.closeOut={
         projectBackground:"",
         contract:"",
@@ -84,7 +91,11 @@ submitProjectCloseout(bool){
     Lessons:this.closeOut.Lessons,
     Business:this.closeOut.Business,
     PR:this.closeOut.PR,
-    add:false
+    add:false,
+    category:this.projectCategory,
+    project_name:this.projectName,
+    area:this.projectArea,
+    market_sector:this.marketSector
   })
 this.close(bool);
 }
@@ -102,7 +113,8 @@ editProjectCloseout(){
     Lessons:this.closeOut.Lessons,
     Business:this.closeOut.Business,
     PR:this.closeOut.PR,
-    add:false
+    add:false,
+    project_name:this.projectName
   })
 }
 }

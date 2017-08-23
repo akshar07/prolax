@@ -1,0 +1,23 @@
+<div class="dropdown" [ngClass]="notifications.length>0?'red':'blue'">
+    <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
+      <i class="glyphicon glyphicon-bell"></i>
+    </a>
+    
+    <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+      
+      <div class="notification-heading"><h4 class="menu-title">Notifications</h4>
+      </div>
+      <li class="divider"></li>
+     <div class="notifications-wrapper" *ngFor="let notification of notifications">
+       <a class="content" (click)="goToTask(notification.project_id)">
+        
+         <div class="notification-item">
+          <h4 class="item-title">{{notification.task_name}} </h4>
+          <p class="item-info">Due on - {{notification.due_date |date}}</p>
+        </div>
+         
+      </a>
+     </div>
+      <li class="divider"></li>
+    </ul>
+  </div>
