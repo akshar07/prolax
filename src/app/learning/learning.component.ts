@@ -11,7 +11,7 @@ export class LearningComponent implements OnInit {
   projectLearnings: any;
 
   constructor(private projectService:ProjectService) { }
-  category:string;
+  category:string='no selection';
   projectCategory=["no selection","Energy Modeling",
   "CFD",
   "Daylighting",
@@ -33,11 +33,11 @@ export class LearningComponent implements OnInit {
   "Mission Critical",
   "Sports",
   "Transportation"];
-  selectedSector:string;
-  selectedArea:number;
+  selectedSector:string='no selection';
+  selectedArea:number=0;
   filter(){
-    if( this.category==='no selection' && this.selectedSector==='no selection' && this.selectedArea==0 ||
-      this.category===null && this.selectedSector===null && this.selectedArea==null){
+    if( this.category==='no selection' &&  this.selectedSector==='no selection' && this.selectedArea==0 ||
+    this.selectedArea==null ||this.category===null|| this.selectedSector===null){
  
       this.projectLearnings=[];
     }

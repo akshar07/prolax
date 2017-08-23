@@ -20,11 +20,17 @@
   </div>
 </div>
 <div class="timeline">
-
-   <div>
-     <app-timeline [Key]="userkey"></app-timeline>
-  </div> 
-
+  <div class="col-lg-12">
+      <div class="user">
+          Welcome <span class="display-name">{{userName}}</span> <app-notifications></app-notifications>
+      </div>
+      <div *ngIf="isManager==='true'">
+        <app-timeline [Key]="userkey" [manager]="isManager"></app-timeline>
+      </div> 
+      <div *ngIf="isManager==='false'">
+          <app-usertimeline [projects]="projectTitles"></app-usertimeline>
+      </div>
+  </div>
 </div>
   <div class="home-wrapper" *ngIf="isManager">
       <div  class="col-lg-12 sus-header">
@@ -226,11 +232,12 @@
       </div>
       <div class="modal-footer">
         <button type="button" [disabled]=" dateInvalid" class="btn btn-default" data-dismiss="modal" (click)="addToList();reset()" >Add</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="say()">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
 
   </div>
 </div>
-
-<a (click)="goToLearning()" class="learning">Lessons Learned</a>
+<div class="learning">
+    <a (click)="goToLearning()" >Lessons Learned</a>
+</div>

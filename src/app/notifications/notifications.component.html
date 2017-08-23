@@ -1,22 +1,31 @@
+| <p *ngIf="notifications.length>0" class="notifyText"> You have <span class="span-red">{{notifications.length}} new</span> notifications</p>
+| <p *ngIf="notifications.length==0" class="notifyText"> You have {{notifications.length}} new notifications</p>
 <div class="dropdown" [ngClass]="notifications.length>0?'red':'blue'">
     <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
       <i class="glyphicon glyphicon-bell"></i>
     </a>
     
     <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
-      
       <div class="notification-heading"><h4 class="menu-title">Notifications</h4>
       </div>
       <li class="divider"></li>
+      <div class="notifications-wrapper" *ngIf="notifications.length==0">
+          <a class="content">
+              <div class="notification-item">
+               <h4 class="item-title"> You have no new Notifications </h4>
+               <p class="item-info"></p>
+             </div>
+          </a>
+      </div>
      <div class="notifications-wrapper" *ngFor="let notification of notifications">
-       <a class="content" (click)="goToTask(notification.project_id)">
-        
+       <a class="content">
+        <span class="pull-right clear" (click)="clearOne(notification.task_id)">clear</span>
          <div class="notification-item">
-          <h4 class="item-title">{{notification.task_name}} </h4>
-          <p class="item-info">Due on - {{notification.due_date |date}}</p>
+          <h4 class="item-title"  (click)="goToTask(notification.project_id)">{{notification.task_name}} </h4>
+          <p class="item-info"  (click)="goToTask(notification.project_id)">Due on - {{notification.due_date |date}}</p>
         </div>
-         
       </a>
+     
      </div>
       <li class="divider"></li>
     </ul>

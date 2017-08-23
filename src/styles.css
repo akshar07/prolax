@@ -8,3 +8,6 @@ body{
 .Milestone{
     background-color:#FFFF6E;
 }
+.vis-inner{
+    text-transform: uppercase;
+}

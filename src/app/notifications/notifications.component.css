@@ -1,12 +1,15 @@
 .dropdown {
     display:inline-block;
-    margin-left:20px;
+    margin-left:0px;
     padding:10px;
     margin-top: 5px;
   }
 
 .red a{
     color:#C73F50 !important;
+}
+.span-red{
+  color:#C73F50 !important;
 }
 .glyphicon-bell {
    
@@ -46,9 +49,11 @@
   
  font-size:1.3rem;
  color:#000;
-    
+cursor: pointer;
 }
-
+.item-info{
+  cursor: pointer;
+}
 .notifications a.content {
  text-decoration:none;
  background:#ccc;
@@ -58,7 +63,14 @@
 .notification-item {
  padding:10px;
  margin:5px;
- background:#ccc;
+ background:#ededed;
  border-radius:4px;
  }
-
+.notifyText{
+  display:inline-block;
+}
+.clear{
+  margin-right: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}

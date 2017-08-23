@@ -32,6 +32,7 @@ import { CommentsService } from './qc-results/comments.service';
 import { TasksTimelineComponent } from './tasks-timeline/tasks-timeline.component';
 import { LearningComponent } from './learning/learning.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { UsertimelineComponent } from './usertimeline/usertimeline.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { NotificationsComponent } from './notifications/notifications.component'
     TimelineComponent,
     TasksTimelineComponent,
     LearningComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    UsertimelineComponent
   ],
   imports: [
     BrowserModule,

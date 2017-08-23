@@ -22,9 +22,9 @@ import { ManagerService } from './manager.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit   {
+  userName: any;
   userTasks: any[];
   @ViewChild(TimelineComponent) timelineCmp: TimelineComponent;
-
   projectsName: Array<string>=[];
   userkey: string;
   params: string;
@@ -118,8 +118,8 @@ ProjectArea:number;
   delete(){
     this.projectService.deleteProject(this.project_key);
     this.projectsTimeline=[];
-    this.timelineCmp.destroy()
-    this.timelineCmp.ngOnInit();
+    this.timelineCmp.destroyTimeline()
+    this.timelineCmp.ngOnInit()
   }
   checkIfManager(){
     let email;
@@ -129,6 +129,7 @@ ProjectArea:number;
     currentUser.subscribe((user=>{
       this.isAdmin=`${user.admin_access}`;
       this.isManager=`${user.manager_access}`;
+      this.userName=user.user_name;
       if(user.manager_access){
         this.params="aabsvchfo134852f";
       }
@@ -137,8 +138,13 @@ ProjectArea:number;
       }
     }))
     })
-    
-
+  }
+  loadData(){
+    let m;
+    return setTimeout(()=>{
+      m=this.isManager;
+      return m
+    },800);
   }
 isManager:string;
   //authenticate manager
@@ -226,9 +232,7 @@ category:string;
        market_sector:[this.selectedSector],
        area:[this.ProjectArea]
     });
-    this.getManagers()
-  //get users and check manager
-  this.checkIfManager()
+
   let userObs=this.userService.getUsers();
   userObs.subscribe((user)=>{
   this.Managers=user;
@@ -238,9 +242,10 @@ category:string;
   projectObs.subscribe((project)=>{
     this.projectTitles=project;
     this.setPage(1);
+    this.getManagers()
+    //get users and check manager
+    this.checkIfManager()
   });
-
-  //get tasks for timelin
   this.authService.user.subscribe((val=>{this.routeThis(val)}))
    }
   routeThis(val){

@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 export class AuthComponent implements OnInit {
   email: string="";
   password: string;
-  userList:Array<any>
+  userList:Array<any>;
+  resetPassword:boolean;
   constructor(public authService: AuthService, private router:Router) {}
   username:string="";
   login() {

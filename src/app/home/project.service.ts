@@ -139,9 +139,6 @@ export class ProjectService {
     getUserTasks(userKey){
         return this.database.list(`/userTasks/${userKey}/assigned_tasks`)
     }
-    getManagerTasks(userKey){
-        return this.database.list(`/userTasks/`)
-    }
     getAllManagers(){
         return this.database.list(`/users`,{
             query:{
@@ -156,6 +153,18 @@ export class ProjectService {
     }
     tagUser(projectId,taskId,userId,taskName,dueDate){
         let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
-        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId});
+        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId});
+    }
+    clearOneNotification(userId,taskId){
+        let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
+        userObs.remove();
+    }
+    getManagerProjects(manager){
+       return this.database.list(`projecttimeline`,{
+            query:{
+                orderByChild:'manager',
+                equalTo:manager
+            }
+        })
     }
 }
