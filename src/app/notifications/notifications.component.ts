@@ -49,6 +49,7 @@ export class NotificationsComponent implements OnInit {
     })
   }
   clearOne(taskId){
+    alert()
     this.projectService.clearOneNotification(this.userId,taskId);
     this.checkIfManager();
   }

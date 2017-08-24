@@ -31,6 +31,7 @@ table td{
 .learning{
     cursor: pointer;
     margin-bottom: 30px;
+    
 }
 .vis-timeline {
     width:100% !important;
@@ -40,3 +41,16 @@ table td{
       font-size: 18px;
       color:#C73F50;
   }
+  .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #c73f50;
+    border-color: #c73f50;
+}
+.add-users{
+    color: #c73f50;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}

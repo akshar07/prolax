@@ -1,13 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 body{
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    color: #2c2c2c;
 }
 .vis-time-axis .vis-grid.vis-minor {
     border-color: #fff
 }
 .Milestone{
-    background-color:#FFFF6E;
+    background-color:#feffb0;;;
+    border-color: #cb7887;
+}
+.Task{
+    background-color: #fafafa;;
+    border-color: #cb7887;
 }
 .vis-inner{
     text-transform: uppercase;
+}
+.vis-labelset .vis-label .vis-inner {
+    color: #c73f50;
 }

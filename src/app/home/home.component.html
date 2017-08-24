@@ -34,7 +34,7 @@
 </div>
   <div class="home-wrapper" *ngIf="isManager">
       <div  class="col-lg-12 sus-header">
-        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a (click)="addUser()">Add Users</a></span></h1>
+        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a class="add-users" (click)="addUser()"><i class="fa fa-address-card-o" aria-hidden="true"></i> Add Users</a></span></h1>
         
         <!-- add new project -->
         <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
@@ -239,5 +239,7 @@
   </div>
 </div>
 <div class="learning">
-    <a (click)="goToLearning()" >Lessons Learned</a>
+  <div class="col-lg-12">
+      <a (click)="goToLearning()" ><i class="glyphicon glyphicon-education"></i>  Lessons Learned</a>
+  </div>
 </div>

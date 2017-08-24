@@ -33,36 +33,19 @@ export class TimelineComponent implements OnInit {
   name:string;
   constructor(private element: ElementRef,private projectService:ProjectService,private managerService:ManagerService) {
   }
-    taskA=[];
-    items=new vis.DataSet([]);
-    options:any;
+  taskA=[];
+  items=new vis.DataSet([]);
+  options:any;
   render(){  
-  this.items = new vis.DataSet(this.finaltasks);
-  this.options = {start:new Date()};  
-  this.timeline = new vis.Timeline(this.element.nativeElement, this.items,this.groups ,this.options);
-    // Create a Timeline
+    this.items = new vis.DataSet(this.finaltasks);
+    this.options = {start:new Date()};  
+    this.timeline = new vis.Timeline(this.element.nativeElement, this.items,this.groups ,this.options);
     let startDate=new Date();
     let endDate= startDate.setDate(startDate.getDate()+8*24*60*60*1000);
   }
 destroy(){
    this.timeline.destroy();
 }
-
-// managerTasks(){
-//   this.managerService.loggedInUser()
-//   .subscribe((user)=>{
-//      this.currentUser=user.email;
-//      let $pos =  this.currentUser.indexOf('@');
-//      this.currentUser = this.currentUser.substr(0, $pos);
-//      this.currentUser= this.currentUser.charAt(0).toUpperCase()+ this.currentUser.charAt(1).toUpperCase() + this.currentUser.slice(2);
-//      this.projectService.getManagerTasks(this.currentUser)
-//      .subscribe((userTasks)=>{
-//        this.userTasks=userTasks;
-//        console.log(this.userTasks)
-//      })
-//    })
-//   setTimeout(()=>this.render(),1000);
-// }
 finaltasks=[];
 formatTasks(task,i){
   console.log(task)
@@ -80,6 +63,7 @@ renderTimeline(){
   setTimeout(()=>this.render(),1000);
 }
 managerTasks(){
+  this.projectNames=[];
   this.managerService.loggedInUser()
   .subscribe((user)=>{
      this.currentUser=user.displayName;
@@ -87,15 +71,13 @@ managerTasks(){
        .subscribe((projects)=>{
        // projects with manager as myself
         projects.forEach((project,i)=>{
-         this.tasks=[]; 
+          this.tasks=[]; 
           this.tasks.push(project.tasks);//[tasks-project1,tasks-project2]
-            console.log(this.tasks)
           this.tasks.forEach((task)=>{
-           let taskKeys=Object.keys(task);
-           console.log(taskKeys)
-           taskKeys.forEach((element,j) => {
-             this.formatTasks(task[Object.keys(task)[j]],i); 
-           });
+            let taskKeys=Object.keys(task);
+            taskKeys.forEach((element,j) => {
+            this.formatTasks(task[Object.keys(task)[j]],i); 
+            });
          })//finaltasks=[task1,task2]
          this.projectNames.push(project.project_name);
         })
@@ -107,10 +89,8 @@ managerTasks(){
    })
 }
   ngOnInit() { 
-this.finaltasks=[];
+  this.finaltasks=[];
   this.managerTasks();
   this.renderTimeline();
-
-  
   }
 }

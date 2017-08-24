@@ -1,8 +1,9 @@
-| <p *ngIf="notifications.length>0" class="notifyText"> You have <span class="span-red">{{notifications.length}} new</span> notifications</p>
-| <p *ngIf="notifications.length==0" class="notifyText"> You have {{notifications.length}} new notifications</p>
-<div class="dropdown" [ngClass]="notifications.length>0?'red':'blue'">
+| <p *ngIf="notifications.length>0" class="notifyText">  <span class="span-red">{{notifications.length}} new</span> notifications</p>
+
+<div class="dropdown" >
     <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
-      <i class="glyphicon glyphicon-bell"></i>
+      <span class="number"*ngIf="notifications.length>0" >{{notifications.length}}</span>
+      <i class="fa fa-globe" aria-hidden="true"></i>
     </a>
     
     <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
