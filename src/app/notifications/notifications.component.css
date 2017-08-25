@@ -48,6 +48,7 @@
  font-size:1.3rem;
  color:#000;
 cursor: pointer;
+
 }
 .item-info{
   cursor: pointer;
@@ -64,6 +65,7 @@ cursor: pointer;
  margin:5px;
  background:#ededed;
  border-radius:4px;
+ word-wrap: break-word;
  }
 .notifyText{
   display:inline-block;
@@ -75,12 +77,12 @@ cursor: pointer;
 }
 #dLabel{
   position: relative;
-  font-size: 20px;
+  font-size: 18px;
 }
 .number{
   position: absolute;
   top: -1px;
-  right: -8px;
+  right: -4px;
   background: #c73f50;
   border-radius: 50%;
   font-size: 7px;

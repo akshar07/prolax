@@ -24,6 +24,7 @@ import { ManagerService } from './manager.service';
 export class HomeComponent implements OnInit   {
   userName: any;
   userTasks: any[];
+  user:string;
   @ViewChild(TimelineComponent) timelineCmp: TimelineComponent;
   projectsName: Array<string>=[];
   userkey: string;
@@ -130,6 +131,7 @@ ProjectArea:number;
       this.isAdmin=`${user.admin_access}`;
       this.isManager=`${user.manager_access}`;
       this.userName=user.user_name;
+      this.user=user.short_name;
       if(user.manager_access){
         this.params="aabsvchfo134852f";
       }

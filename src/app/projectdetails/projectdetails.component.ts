@@ -97,6 +97,9 @@ export class ProjectdetailsComponent implements OnInit {
     { num: 1, name: "Milestone" }
   ];
   setColor(date:string, complete:boolean){
+    if(complete){
+      return -1;
+    }
   let dueDate=new Date(date)
   let currentDate= new Date()
   if(dueDate.getMonth()-currentDate.getMonth()>0){
@@ -147,7 +150,6 @@ export class ProjectdetailsComponent implements OnInit {
         let $pos =  this.loggedInUser.indexOf('@');
         this.loggedInUser= this.loggedInUser.substr(0, $pos);
         this.loggedInUser= this.loggedInUser.charAt(0).toUpperCase()+ this.loggedInUser.charAt(1).toUpperCase() +  this.loggedInUser.slice(2);
-       console.log(this.loggedInUser)
       });
     
       
@@ -189,7 +191,7 @@ export class ProjectdetailsComponent implements OnInit {
 
   }
   tagUser(){
-    this.projectService.tagUser(this.projectID,this.taskId,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate);
+    this.projectService.tagUser(this.projectID,this.taskId,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate,this.projectManager);
   }
   routeThis(val) {
     if (!val)
@@ -270,11 +272,7 @@ export class ProjectdetailsComponent implements OnInit {
       qc2:{},
       comments:{}
     });
-    console.log(this.loggedInUser)
-    if(this.isManager){
-      this.projectService.addTimelineTasks(this.loggedInUser,this.assigned_to.short_name,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName)
-    }
-    this.projectService.addTasksForMe(this.assigned_to.short_name,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName)
+    this.projectService.addTasksForMe(this.assigned_to.short_name,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName,this.taskObj.categoryType)
     this.inputsForm.reset();
     this.sortUp = true;
     this.timelineCmp.destroy();
@@ -326,23 +324,28 @@ export class ProjectdetailsComponent implements OnInit {
       imageUrl: this.taskObj.imageUrl,
       user_short:this.assigned_to.short_name,
     });
+    this.projectService.editNotification({
+      due_date:this.taskObj.dueDate,manager:this.projectManager,project_id:this.projectID,task_id:this.taskId,task_name:this.taskObj.taskName
+      },this.taskObj.user_short,this.taskId)
     if(this.isManager){
-      this.projectService.editTasksForMe( this.user_short_before,this.taskObj.user_short,this.projectID,this.taskId,this.taskObj.dueDate,this.taskObj.taskName)
-      this.projectService.editTimelineTasks(this.user_short_before,this.taskObj.user_short,this.assigned_to.short_name,this.projectID,this.taskId)
+      this.projectService.editTasksForMe( 
+        this.user_short_before,
+        this.taskObj.user_short,
+        this.projectID,
+        this.taskId,
+        this.taskObj.dueDate,
+        this.taskObj.taskName,
+        this.taskObj.categoryType)
     }
     this.sortUp = true;
     this.timelineCmp.destroy();
     this.timelineCmp.getTasks();
     this.timelineCmp.drawTimeline();
   }
-  deleteTask() {
-    console.log(this.taskObj.user_short)
+  deleteTask(){
+    this.projectService.deleteTasksForMe(this.taskObj.user_short,this.taskId,this.projectID);
+    this.projectService.deleteTask(this.taskObj.user_short);
     
-    if(this.isManager){
-      this.projectService.deleteTasksForMe(this.taskObj.user_short,this.taskId)
-      this.projectService.deleteTimeLineTasks(this.loggedInUser,this.projectID,this.project_name,this.taskId)
-    }
-    this.projectService.deleteTask();
     this.sortUp = true;
     this.timelineCmp.destroy();
     this.timelineCmp.getTasks();
@@ -350,7 +353,8 @@ export class ProjectdetailsComponent implements OnInit {
   }
   userTasks(){
     this.taskList = this.globalTasks.filter((task) => {
-      return task.assigned_to === this.user_key;
-    })
+      return task.user_short === this.loggedInUser;
+    });
+    this.timelineCmp.filterMyTaskCategory(this.loggedInUser);
   }
 }

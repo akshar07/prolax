@@ -37,8 +37,6 @@ export class NotificationsComponent implements OnInit {
       taskKeys.forEach(key => {
         this.notifications.push(this.tasks[key])
       });
-
-      console.log(this.notifications)
       if(user.manager_access){
         this.params="aabsvchfo134852f";
       }

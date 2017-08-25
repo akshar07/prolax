@@ -1,9 +1,9 @@
-| <p *ngIf="notifications.length>0" class="notifyText">  <span class="span-red">{{notifications.length}} new</span> notifications</p>
+| <p *ngIf="notifications.length>0" class="notifyText">  <span class="span-red">{{notifications.length}} new</span> notification<span *ngIf="notifications.length>1">s</span></p>
 
 <div class="dropdown" >
     <a id="dLabel" role="button" data-toggle="dropdown" data-target="#">
       <span class="number"*ngIf="notifications.length>0" >{{notifications.length}}</span>
-      <i class="fa fa-globe" aria-hidden="true"></i>
+      <i class="fa fa-bell" aria-hidden="true"></i>
     </a>
     
     <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
@@ -22,7 +22,7 @@
        <a class="content">
         <span class="pull-right clear" (click)="clearOne(notification.task_id)">clear</span>
          <div class="notification-item">
-          <h4 class="item-title"  (click)="goToTask(notification.project_id)">{{notification.task_name}} </h4>
+          <h4 class="item-title"  (click)="goToTask(notification.project_id)"><b>{{notification.manager}}</b> wants you to have a look at {{notification.task_name}} </h4>
           <p class="item-info"  (click)="goToTask(notification.project_id)">Due on - {{notification.due_date |date}}</p>
         </div>
       </a>

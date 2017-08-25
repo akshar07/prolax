@@ -42,7 +42,6 @@ user:string;
 submitComment(){
  let d1 = new Date();
  this.commentsService.postComment(this.timelineId,this.taskId,{chat:this.chat,user:this.user,date:d1.toDateString()});
-  console.log(this.chat)
  this.inputsForm.reset();
 }
 

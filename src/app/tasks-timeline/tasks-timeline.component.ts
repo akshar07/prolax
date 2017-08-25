@@ -15,7 +15,8 @@ export class TasksTimelineComponent implements OnInit {
   tasks: any[];
   @Input()
   timelineId;
-
+  @Input()
+  loggedInUser;
   timeline: any;
   options: any;
   items: any;
@@ -36,7 +37,7 @@ export class TasksTimelineComponent implements OnInit {
    }
    drawTimeline(){
     this.load=true;
-    setTimeout(()=>{this.render();this.load=false;},2000);
+    setTimeout(()=>{this.render();this.load=false;},1500);
    }
    quickRender(){
      this.render()
@@ -70,7 +71,6 @@ export class TasksTimelineComponent implements OnInit {
     this.quickRender();
   }
   showAll() {
-    console.log(this.allTasks)
     this.tasks = this.allTasks;
     this.userTasks=[];
     this.formatTasks( this.tasks);
@@ -78,9 +78,17 @@ export class TasksTimelineComponent implements OnInit {
     this.quickRender();
   }
   filterMilestoneCategory() {
-    console.log(this.allTasks)
     this.tasks = this.allTasks.filter((task) => {
       return task.categoryType === "Milestone";
+    });
+    this.userTasks=[];
+    this.formatTasks( this.tasks);
+    this.destroy();
+    this.quickRender();
+  }
+  filterMyTaskCategory(user){
+    this.tasks = this.allTasks.filter((task) => {
+      return task.user_short === user;
     });
     this.userTasks=[];
     this.formatTasks( this.tasks);

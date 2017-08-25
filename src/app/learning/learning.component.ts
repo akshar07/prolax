@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../home/project.service';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-learning',
@@ -10,7 +12,9 @@ export class LearningComponent implements OnInit {
   allProject: any[];
   projectLearnings: any;
 
-  constructor(private projectService:ProjectService) { }
+  constructor(private projectService:ProjectService,
+              public authService: AuthService,
+              private router:Router,) { }
   category:string='no selection';
   projectCategory=["no selection","Energy Modeling",
   "CFD",
@@ -75,8 +79,13 @@ export class LearningComponent implements OnInit {
  
   }
 
-
+  routeThis(val){
+    if(!val){
+    this.router.navigate([""]);
+  }
+}
   ngOnInit() {
+    this.authService.user.subscribe((val=>{this.routeThis(val)}))
     this.projectService.getLearningProjects()
       .subscribe(projects=>{this.allProject=projects;})
   }

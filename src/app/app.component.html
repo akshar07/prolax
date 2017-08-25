@@ -1,9 +1,12 @@
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
+        <button (click)="toggleMenu()" class="hamburger"><span></span></button>
+        
       <a class="navbar-brand" (click)="goToProjects()">QAQC Manager</a>
     </div>
     <ul class="nav navbar-nav">
+        
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li><a>SUSTAINABILITY | ThorntonTomasetti</a></li>
@@ -11,5 +14,5 @@
     </ul>
   </div>
 </nav>
-
+<app-slider [@slideInOut]="menuState"></app-slider>
 <router-outlet></router-outlet>

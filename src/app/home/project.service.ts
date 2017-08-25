@@ -64,8 +64,14 @@ export class ProjectService {
     editTask(task){
          this.taskObs.update(task)
     }
-    deleteTask(){
+    editNotification(task,user,taskId){
+        alert(taskId+user)
+        this.database.object(`users/${user}/tagged/${taskId}`).update(task)
+    }
+    deleteTask(userId){
         this.taskObs.remove();
+        let userObsTask=this.database.object(`users/${userId}/tagged/${this.taskKey}`);
+        userObsTask.remove();
     }
     addQC1(timelineId,taskId,QC1){
         this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
@@ -99,45 +105,45 @@ export class ProjectService {
         closeoutObs.update(closeout);
     }
     //check
-    addTimelineTasks(user,assigned_to,projectId,project_name,task_key,dueDate,task_name){
-        let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/projectName`)
-            x.set(project_name);
-        let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
-            y.set(task_key);
-        }
-    editTimelineTasks(user_before,user,assigned_to,projectId,task_key){
-        let y=this.database.object(`userTasks/${user_before}/managing_projects/${projectId}/staffList/${user_before+task_key}`)
-        y.remove();
-        let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
-        x.set(task_key);
-    }
-    addTasksForMe(user,projectId,project_name,task_key,dueDate,task_name){
-        let z=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}`)
+    // addTimelineTasks(user,assigned_to,projectId,project_name,task_key,dueDate,task_name){
+    //     let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/projectName`)
+    //         x.set(project_name);
+    //     let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
+    //         y.set(task_key);
+    //     }
+    // editTimelineTasks(user_before,user,assigned_to,projectId,task_key){
+    //     let y=this.database.object(`userTasks/${user_before}/managing_projects/${projectId}/staffList/${user_before+task_key}`)
+    //     y.remove();
+    //     let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
+    //     x.set(task_key);
+    // }
+    addTasksForMe(user,projectId,project_name,task_key,dueDate,task_name,type){
+        let y=this.database.object(`userTasks/${user}/${projectId}/project_name`);
+        y.set(project_name)
+        let z=this.database.object(`userTasks/${user}/${projectId}/tasks/${task_key}`)
         z.set({
             start:dueDate,
-            content:task_name
+            content:task_name,
+            className:type
         })
     }
-    editTasksForMe(user_before,user,projectId,task_key,dueDate,task_name){
+    editTasksForMe(user_before,user,projectId,task_key,dueDate,task_name,task_type){
         alert(user_before)
-        let z=this.database.object(`userTasks/${user_before}/assigned_tasks/${task_key}/`)
+        let z=this.database.object(`userTasks/${user_before}/${projectId}/tasks/${task_key}/`)
         z.remove();
-        let x=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}/`)
+        let x=this.database.object(`userTasks/${user}/${projectId}/tasks/${task_key}/`)
         x.set({
             start:dueDate,
             content:task_name
         });
     }
-    deleteTimeLineTasks(user,projectId,project_name,task_key){
-        let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${user+task_key}`)
-        y.remove(); 
-    }
-    deleteTasksForMe(user,task_key){
-        let z=this.database.object(`userTasks/${user}/assigned_tasks/${task_key}/`)
+    deleteTasksForMe(user,task_key,projectId){
+        alert(user+ projectId+task_key)
+        let z=this.database.object(`userTasks/${user}/${projectId}/${task_key}/`)
         z.remove();
     }
-    getUserTasks(userKey){
-        return this.database.list(`/userTasks/${userKey}/assigned_tasks`)
+    getMyTasks(user){
+        return this.database.list(`/userTasks/${user}`)
     }
     getAllManagers(){
         return this.database.list(`/users`,{
@@ -151,9 +157,9 @@ export class ProjectService {
     getLearningProjects(){
         return this.database.list(`/closeouts`)
     }
-    tagUser(projectId,taskId,userId,taskName,dueDate){
+    tagUser(projectId,taskId,userId,taskName,dueDate,manager){
         let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
-        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId});
+        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager});
     }
     clearOneNotification(userId,taskId){
         let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);

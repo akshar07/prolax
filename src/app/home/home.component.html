@@ -28,7 +28,7 @@
         <app-timeline [Key]="userkey" [manager]="isManager"></app-timeline>
       </div> 
       <div *ngIf="isManager==='false'">
-          <app-usertimeline [projects]="projectTitles"></app-usertimeline>
+          <app-usertimeline [user]="user"></app-usertimeline>
       </div>
   </div>
 </div>
@@ -238,6 +238,7 @@
 
   </div>
 </div>
+<div class="clearfix"></div>
 <div class="learning">
   <div class="col-lg-12">
       <a (click)="goToLearning()" ><i class="glyphicon glyphicon-education"></i>  Lessons Learned</a>

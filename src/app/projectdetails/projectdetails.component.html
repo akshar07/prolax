@@ -162,7 +162,7 @@
             </div>
             </div>
                <!--edit Modalend ednd-->     
-               <app-tasks-timeline [timelineId]="projectID"></app-tasks-timeline>
+               <app-tasks-timeline [timelineId]="projectID" [loggedInUser]="loggedInUser"></app-tasks-timeline>
         <ul class="timeline">
             <div class="col-lg-offset-2">
                 <button type="button" 
@@ -178,7 +178,25 @@
               
                 <button type="button" class="btn btn-default btn-sm"  (click)="userTasks()">My Tasks</button>   
                 <button type="button" class="btn btn-default btn-sm"  (click)="showAll()">All</button>                     
-            </div>    
+            </div>   
+            <div class="info col-lg-offset-2">
+                <div class="legend">
+                    <div class="near-task legend-info"></div>
+                    <p>Approaching Deadline</p>
+                </div> 
+                <div class="legend">
+                    <div class="far-task legend-info"></div>
+                    <p>Distant Tasks</p>
+                </div>
+                <div class="legend">
+                    <div class="missed-task legend-info"></div>
+                    <p>Missed Deadline</p>
+                </div>
+                <div class="legend">
+                    <div class="done-task legend-info"></div>
+                    <p>Completed</p>
+                </div>      
+            </div> 
             <li *ngFor="let item of taskList; let i =index"  class="timelineItem row col-lg-12">
                 <!-- timelineItem-left -->
                 <div class="timelineItem-left col-lg-2 ">
@@ -254,6 +272,7 @@
                     <button type="button" 
                             class="btn btn-default btn-sm btn-circle action-buttons col-lg-6" 
                             (click)="getTask(item.$key)"
+                            *ngIf="isManager==='true'"
                             data-toggle="modal" data-target="#tag">
                             <span class="glyphicon glyphicon-tag"></span>
                     </button>
@@ -278,15 +297,15 @@
           <!--project closeout task-->
           <ul class="timeline ">
             <li class="timelineItem closeout-box row col-lg-12">
-                <div class="timelineItem-left closeout col-lg-2 ">
+                <div class="timelineItem-left col-lg-2 ">
                  
                 </div>
 
                 <!-- timelineItem-middle -->
                 <div class="timelineItem-body closeout col-lg-8">
                     <div class="header">
-                        <strong class="text-capitalize"> {{timelineToShow?.project_number}} // {{marketSector}}{{timelineToShow?.project_name}} - Close Out </strong> 
-                        <button type="button" class="btn btn-sm action-buttons pull-right" data-toggle="collapse"data-target="#closeout">+</button>
+                        <strong class="text-capitalize">{{project_name}} - Close Out </strong> 
+                        <button type="button" class="btn btn-sm action-buttons cloaseout-action-buttons pull-right" data-toggle="collapse"data-target="#closeout">+</button>
                     </div>
                     <div class="clearfix"></div>
                    <div id="closeout" class="collapse collapse-content ">

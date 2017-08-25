@@ -44,7 +44,8 @@ export class AuthService {
         }
       })
       .catch(err => {
-        alert(`'Something went wrong:', ${err.message}`);
+        alert(`Something went wrong:, ${err.message} 
+Please contact the administrator`);
       });
   }
   sendToken() {

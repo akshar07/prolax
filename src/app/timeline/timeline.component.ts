@@ -19,7 +19,8 @@ declare var vis: any;
   styleUrls: ['./timeline.component.css']
 })
 export class TimelineComponent implements OnInit {
-  projectNames=[];
+  load: boolean;
+  projectNames = [];
   tasks = [];
   currentUser: string;
   userTasks: any[];
@@ -48,7 +49,6 @@ destroy(){
 }
 finaltasks=[];
 formatTasks(task,i){
-  console.log(task)
   this.finaltasks.push({
     start:task.dueDate,
     content:task.taskName,
@@ -60,7 +60,8 @@ destroyTimeline(){
   this.timeline.destroy();
 }
 renderTimeline(){
-  setTimeout(()=>this.render(),1000);
+  this.load=true;
+  setTimeout(()=>{this.render();this.load=false;},1000);
 }
 managerTasks(){
   this.projectNames=[];
