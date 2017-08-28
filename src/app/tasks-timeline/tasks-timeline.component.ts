@@ -26,11 +26,6 @@ export class TasksTimelineComponent implements OnInit {
     this.items = new vis.DataSet(this.userTasks);
     this.options = {start:new Date()};  
     this.timeline = new vis.Timeline(this.element.nativeElement, this.items,this.options);
-      // Create a Timeline
-      let startDate=new Date();
-      let endDate= startDate.setDate(startDate.getDate()+8*24*60*60*1000);
-    // this.items.push()
-
     }
     destroy(){
       this.timeline.destroy();

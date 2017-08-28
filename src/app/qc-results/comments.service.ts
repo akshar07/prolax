@@ -16,4 +16,7 @@ export class CommentsService {
     getComments(timelineId,taskId){
         return this.database.list(`/task-logs/${timelineId}/${taskId}`);
     }
+    deleteComment(timelineId,taskId,commentId){
+        this.database.object(`/task-logs/${timelineId}/${taskId}/${commentId}`).remove();
+    }
 }

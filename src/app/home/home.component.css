@@ -30,7 +30,7 @@ table td{
 }
 .learning{
     cursor: pointer;
-    margin-bottom: 50px;
+    padding-top: 17px;
 }
 .vis-timeline {
     width:100% !important;
@@ -52,7 +52,12 @@ table td{
     text-decoration: none;
     font-size: 16px;
     cursor: pointer;
+    padding-top: 17px;
 }
 .page-header{
     font-size: 22px;
+}
+.no-padding{
+    padding-left:0px;
+    padding-right:0px;
 }

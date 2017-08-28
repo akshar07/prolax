@@ -16,7 +16,8 @@ export class QcResultsComponent implements OnInit {
   taskId:string;
   @Input()
   timelineId:string;
-
+  @Input()
+  isManager:boolean;
 database:any;
   constructor(private fb:FormBuilder, private commentsService:CommentsService, private authService:AuthService, private auth: AngularFireAuth) { 
   }
@@ -24,6 +25,7 @@ inputsForm:FormGroup;
 chat:string;
 user:string;
   ngOnInit() {
+    console.log(this.isManager)
     let user;
        this.auth.authState.subscribe((auth)=>{
           this.user= auth.displayName;
@@ -43,6 +45,9 @@ submitComment(){
  let d1 = new Date();
  this.commentsService.postComment(this.timelineId,this.taskId,{chat:this.chat,user:this.user,date:d1.toDateString()});
  this.inputsForm.reset();
+}
+deleteComment(commentId){
+  this.commentsService.deleteComment(this.timelineId,this.taskId,commentId);
 }
 
 }

@@ -72,6 +72,7 @@ export class ProjectService {
         this.taskObs.remove();
         let userObsTask=this.database.object(`users/${userId}/tagged/${this.taskKey}`);
         userObsTask.remove();
+        this.database.object(`users/${userId}/tagged/${this.taskKey}add`).remove();
     }
     addQC1(timelineId,taskId,QC1){
         this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
@@ -157,9 +158,15 @@ export class ProjectService {
     getLearningProjects(){
         return this.database.list(`/closeouts`)
     }
-    tagUser(projectId,taskId,userId,taskName,dueDate,manager){
-        let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
-        userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager});
+    tagUser(projectId,taskId,userId,taskName,dueDate,manager,type){
+        if(type==false){
+            let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
+            userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager,type:type});    
+        }
+        else{
+            let userObs=this.database.object(`users/${userId}/tagged/${taskId}add`);
+            userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager,type:type});    
+        }
     }
     clearOneNotification(userId,taskId){
         let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);

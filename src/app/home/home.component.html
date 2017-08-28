@@ -21,9 +21,16 @@
 </div>
 <div class="timeline">
   <div class="col-lg-12">
-      <div class="user">
+      <div class="user col-lg-6 no-padding">
           Welcome <span class="display-name">{{userName}}</span> <app-notifications></app-notifications>
       </div>
+      <div class="col-lg-3 add-users no-padding">
+        <span *ngIf="isAdmin==='true'"><a  (click)="addUser()"><i class="fa fa-address-card-o" aria-hidden="true"></i> Add Users</a></span>
+      </div>
+      <div class="learning col-lg-3 no-padding">
+            <a (click)="goToLearning()" class="pull-right"><i class="glyphicon glyphicon-education "></i>  Lessons Learned</a>
+      </div>
+      <div class="clearfix"></div>
       <div *ngIf="isManager==='true'">
         <app-timeline [Key]="userkey" [manager]="isManager"></app-timeline>
       </div> 
@@ -34,7 +41,7 @@
 </div>
   <div class="home-wrapper" *ngIf="isManager">
       <div  class="col-lg-12 sus-header">
-        <h1 class="page-header">Project List <span class="pull-right" *ngIf="isAdmin==='true'"><a class="add-users" (click)="addUser()"><i class="fa fa-address-card-o" aria-hidden="true"></i> Add Users</a></span></h1>
+        <h1 class="page-header">Project List </h1>
         
         <!-- add new project -->
         <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
@@ -239,8 +246,4 @@
   </div>
 </div>
 <div class="clearfix"></div>
-<div class="learning">
-  <div class="col-lg-12">
-      <a (click)="goToLearning()" ><i class="glyphicon glyphicon-education"></i>  Lessons Learned</a>
-  </div>
-</div>
+

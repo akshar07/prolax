@@ -204,12 +204,15 @@
                 </div>
 
                 <!-- timelineItem-middle -->
-                <div class="timelineItem-body  col-lg-8" [ngClass]="setColor(item.dueDate,item.status)==1 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':(setColor(item.dueDate,item.status)==-1 ?'done':'coming'))">
+                <div class="timelineItem-body  col-lg-8" >
                     <span></span>
                     <img class="img-circle timeline-avatar" [src]="item.imageUrl">
                     <div class="header">
                   
-                      <p>  <strong class="text-capitalize"> {{item.taskName}} </strong> // {{item.assigned_to}}  <span class="status" *ngIf="item.status">Completed</span><span class="status" *ngIf="!item.status">In Progress</span></p>
+                      <p>  <strong class="text-capitalize"> {{item.taskName}} </strong> // {{item.assigned_to}}  
+                        <span class="status"[ngClass]="setColor(item.dueDate,item.status)==1 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':(setColor(item.dueDate,item.status)==-1 ?'done':'coming'))" *ngIf="item.status">Completed</span>
+                        <span class="status"[ngClass]="setColor(item.dueDate,item.status)==1 ? 'near':(setColor(item.dueDate,item.status)==1000 ?'missed':(setColor(item.dueDate,item.status)==-1 ?'done':'coming'))" *ngIf="!item.status">In Progress</span>
+                    </p>
                     </div>
                     <div class="col-lg-12 details itemContent">
                         {{item.details}} 
@@ -257,7 +260,7 @@
                                         <app-qc2 [taskId]="item.$key" [isManager]="isManager" [timelineId]="projectID"> </app-qc2>
                                 </div>
                                 <div class="tab-pane " id="qcc{{i}}" role="tabpane2">
-                                        <app-qc-results [taskId]="item.$key" [timelineId]="projectID"></app-qc-results>
+                                        <app-qc-results [taskId]="item.$key" [isManager]="isManager" [timelineId]="projectID"></app-qc-results>
                                 </div>
                             </div>
                             </div>

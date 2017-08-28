@@ -63,9 +63,13 @@ renderTimeline(){
   this.load=true;
   setTimeout(()=>{this.render();this.load=false;},1000);
 }
+
+
 managerTasks(){
+
   this.projectNames=[];
   this.managerService.loggedInUser()
+ 
   .subscribe((user)=>{
      this.currentUser=user.displayName;
      this.projectService.getManagerProjects(this.currentUser)
@@ -88,6 +92,7 @@ managerTasks(){
         }
        })
    })
+  let projects$=this.projectService.getManagerProjects(this.currentUser)
 }
   ngOnInit() { 
   this.finaltasks=[];

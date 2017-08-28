@@ -47,13 +47,11 @@ export class NotificationsComponent implements OnInit {
     })
   }
   clearOne(taskId){
-    alert()
     this.projectService.clearOneNotification(this.userId,taskId);
     this.checkIfManager();
   }
   goToTask(projectKey){
         this.router.navigate(['projectDetail',projectKey,`${this.params}`]);
-
   }
   ngOnInit() {
   this.checkIfManager();

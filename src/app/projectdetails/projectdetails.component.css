@@ -55,19 +55,28 @@ h3 span a{
  
 } */
 .near{
-    border-color: #f39c12;
-    transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
+    background:   #f39c12;
+    padding: 4px 8px;
+    font-size: 13px;
+    color:#fff !important;
 }
 .missed{
-    border-color: #EF6666;
-    transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
+    background:   #EF6666;
+    padding: 4px 8px;
+    font-size: 13px;
+    color:#fff !important;
 }
 .coming {
-    border-color: #888888;
-    transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
+    background:  #888888;
+    padding: 4px 8px;
+    font-size: 13px;
+    color:#fff !important;
 }
 .done{
-    border-color: #579D57;
+    background: #579d57;
+    padding: 4px 10px;
+    font-size: 13px;
+    color:#fff !important;
 }
 /* .coming:before{
     content: "";
@@ -95,7 +104,7 @@ right:20px!important;
 display:inline !important;
 position: relative !important;
     float: right;
-    width: 100px  !important;
+    width: 110px  !important;
     border:0px !important;
 }
 /* .timelineItem-body span:after{
@@ -128,7 +137,7 @@ position: relative !important;
     padding-left: 15px;
     text-transform: uppercase;
     width:100%;
-    color:#fff;
+    color:#000
 }
 .details{
      padding-bottom:15px; 

@@ -6,16 +6,23 @@
     padding: 15px;
 }
 .chat li{
+ 
+}
+.chat-box{
     padding: 10px;
     background: #848b97;
     margin-top: 10px;
     border-radius: 10px;
     color: #fff;
-word-wrap: break-word;
+    word-wrap: break-word;
     margin-bottom: 10px;
 }
 .chat li span{
      padding-top: 7px;
     font-size: 13px;
     float:right;
+}
+.delete{
+    padding-top:18px;
+    font-size: 20px;
 }
