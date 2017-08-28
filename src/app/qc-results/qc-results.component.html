@@ -1,7 +1,7 @@
 <ul class="chat">
   <li *ngFor="let comment of commentsArray">
     <div class="col-lg-11 col-md-11 col-sm-11 chat-box">
-      {{comment.chat}}  <span>-{{comment.user}} // {{comment.date}} {{isManager}}</span>
+      {{comment.chat}}  <span>-{{comment.user}} // {{comment.date}}</span>
     </div>
     <div class="col-lg-1 delete" *ngIf="isManager==='true'">
       <i class="fa fa-times" aria-hidden="true"  (click)="deleteComment(comment.$key)"></i>
@@ -9,7 +9,7 @@
     <div class="clearfix"></div>
   </li>
 </ul>
-<form [formGroup]="inputsForm">
+<form [formGroup]="inputsForm" *ngIf="commentsArray?.length<10">
   <div class="form-group chat-input">
           <div class="comments">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -26,4 +26,4 @@
         </div>
     </div>
 </form>
-    <button type="button" (click)="submitComment()" class="pull-right">Comment</button>
+    <button type="button"  *ngIf="commentsArray?.length<10" (click)="submitComment()" class="pull-right">Comment</button>
