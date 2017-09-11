@@ -149,8 +149,12 @@ popover-content p{
     margin:0;
     cursor: pointer;
     color: #000;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-size: 13px;
 }
-
+popover-content p:hover{
+    color:#c73f50;
+}
 .note-wrapper{
     padding:10px;
 }
