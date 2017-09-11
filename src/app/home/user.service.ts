@@ -18,4 +18,7 @@ export class UserService {
         this.users = this.database.list('/users')
         return this.users;
     }
+    getProjectUsers(projectId){
+        return this.database.list(`projects/${projectId}/project_members`)
+    }
 }

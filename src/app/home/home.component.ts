@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { Observable } from "rxjs/Observable";
 import { PagerService } from "pagination";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { IMultiSelectOption, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
 
 import * as _ from 'underscore';
 import { AuthService } from '../auth.service';
@@ -10,32 +11,45 @@ import { Router } from '@angular/router';
 import { Project } from './project';
 import { Manager } from './manager';
 import { Projects } from './projects';
-import { TimelineComponent } from '../timeline/timeline.component';
 import { UserService } from './user.service';
 import { ProjectService } from './project.service';
 import { ManagerService } from './manager.service';
-
+import {trigger, state, style, transition, animate} from '@angular/animations';
+import { DropdownComponent } from '../dropdown/dropdown.component';
+import { UsertimelineComponent } from '../usertimeline/usertimeline.component';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        transform: 'translate3d(0, 0, 0)'
+      })),
+      state('out', style({
+        transform: 'translate3d(100%, 0, 0)'
+      })),
+      transition('in => out', animate('400ms ease-in-out')),
+      transition('out => in', animate('400ms ease-in-out'))
+    ]),
+  ]
 })
 export class HomeComponent implements OnInit   {
+  showingArchived: boolean;
+  @ViewChild(DropdownComponent) dropdown: DropdownComponent;
+  @ViewChild(NotificationsComponent) notifications: NotificationsComponent;
+  @ViewChild(UsertimelineComponent) timeline: UsertimelineComponent;
+  userImage: any;
+  projectMembers: any;
+  projectListObs: Observable<any>;
   userName: any;
-  userTasks: any[];
   user:string;
-  @ViewChild(TimelineComponent) timelineCmp: TimelineComponent;
-  projectsName: Array<string>=[];
-  userkey: string;
   params: string;
   isAdmin: string;
   dateInvalid: boolean;
   currentUser: string;
-  projects:Observable<any>;
-  projectTitles:Array<Project>=[];
-  tasks: FirebaseListObservable<any[]>;
-  timeline: FirebaseListObservable<any[]>;
   Managers:any[]=[];
   database:AngularFireDatabase;
   project_key:string;
@@ -51,205 +65,166 @@ export class HomeComponent implements OnInit   {
               ) {
               
                 }
+                menuState:string = 'out';
+                toggleMenu() {
+                   this.menuState = this.menuState === 'out' ? 'in' : 'out';
+                }                
 projectsTimeline:Array<any>=[];
-//project category
-projectCategory=["Energy Modeling",
-                "CFD",
-                "Daylighting",
-                "LEED consulting",
-                "Compliance modeling",
-                "Hygrothermal analysis",
-                "Heat Transfer analysis",
-                "Envelop Consulting",
-                "Sustainability Strategies"];
-selectedSector:string;
-market_sector=["Aviation",
-               "Commercial",
-               "Cultural/Institutional",
-               "Education K-12",
-               "Government",
-               "Healthcare",
-               "Higher Education",
-               "Hospitality/Gaming",
-               "Mission Critical",
-               "Sports",
-               "Transportation"];
-ProjectArea:number;
 // add project
+
+getProjectInfo(id,members){
+this.project_key=id;
+this.projectMembers=members;
+}
+showArchived(){
+  this.showingArchived=true;
+  this.projectListObs= this.projectService.getProjects(this.user,true)
+  this.projectNotesId=this.user;
+  this.getProjectNotes()
+}
+showCurrent(){
+  this.showingArchived=false;
+  this.projectListObs= this.projectService.getProjects(this.user,false);
+  this.projectNotesId=this.user;
+  this.getProjectNotes()
+}
+archiveProject(projectId,members){
+  this.projectService.archiveProject(this.project_key,this.projectMembers)
+  this.timeline.destroy();
+  this.timeline.ngOnInit();
+  this.notifications.ngOnInit();
+}
   addToList() {
     let project_key=this.projectService.addProject(
-      {
-          project_number:this.project_number,
-          manager:this.manager,
+       {
+          course:this.course,
           title: this.title,
           projectStatus:this.projectStatus,
-          client:this.client,
-          climate_zone:this.climate,
-          services:[],
-          assigned_to:[],
-          startDate:this.startDate,
+          startDate:new Date(),
           endDate:this.endDate,
-          combined:this.title+this.manager+this.project_number,
-          category:this.category,
-          market_sector:this.selectedSector,
-          area:this.ProjectArea
-        }
-    )
+          combined:this.title+this.course,
+          project_members:this.projectMembers,
+          archived:false
+        },this.title,this.course,this.projectMembers
+    );
+
     this.projectsTimeline=[];
     this.projectService.addTimeline({
       project_name:this.title, 
-      project_number:this.project_number,
-      manager:this.manager,
-      client:this.client,
-      category:this.category,
-      market_sector:this.selectedSector,
-      area:this.ProjectArea,
+      course:this.course,
       tasks:[]
     },project_key)
   }
   reset(){
      this.inputsForm.reset()
   }
-  getProject(key,project){
+  keys=[];
+  getProject(key,project,members){
+   members.map(member=>{
+     
+     this.keys=[...this.keys,member.key];
+   })
+   console.log(this.keys)
     this.project_key=key
     this.project=project;
+    this.projectMembers=members;
+    this.projectService.getEditProject(key)
+      .subscribe(project=>{
+        console.log(project)
+        this.title=project.title;
+        this.course=project.course;
+        this.startDate=project.startDate;
+        this.endDate=project.endDate;
+      })
+      console.log(this.title)
   }
   project:Project;
    //delete Project
   delete(){
-    this.projectService.deleteProject(this.project_key);
+    this.projectService.deleteProject(this.project_key,this.keys);
     this.projectsTimeline=[];
-    this.timelineCmp.destroyTimeline()
-    this.timelineCmp.ngOnInit()
+    this.timeline.destroy();
+    this.timeline.ngOnInit();
+    this.notifications.ngOnInit();
   }
-  checkIfManager(){
-    let email;
+  checkLoggedUser(){
+    let loggedEmail;
     let userObs=this.managerService.loggedInUser();
     userObs.subscribe((user)=>{
     let currentUser=this.managerService.setCurrentUser(user.email);
     currentUser.subscribe((user=>{
       this.isAdmin=`${user.admin_access}`;
-      this.isManager=`${user.manager_access}`;
       this.userName=user.user_name;
       this.user=user.short_name;
-      if(user.manager_access){
-        this.params="aabsvchfo134852f";
-      }
-      else{
-        this.params="aabsvchfo1egsgu432f";
-      }
+      this.notesObs=this.projectService.getProjectnotes(this.user);
+      this.userImage=user.imageUrl;
+      this.params="aabsvchfo134852f";
+      this.projectListObs= this.projectService.getProjects(this.user,false)
+      this.projectNotesId=this.user;
     }))
     })
   }
-  loadData(){
-    let m;
-    return setTimeout(()=>{
-      m=this.isManager;
-      return m
-    },800);
+  // get/ post project notes
+  projectNoteInput:string;
+  projectNotesId:string;
+  getProjectNotes(){
+    this.notesObs=this.projectService.getProjectnotes(this.projectNotesId);
+    let element = document.getElementById('scrollMe');
+    }
+  addNoteToProject(){
+    if (this.projectNotesId==='myNotes'){
+      this.projectService.addProjectNote(this.user,this.projectNoteInput);
+    }
+    else{
+      this.projectService.addProjectNote(this.projectNotesId,this.projectNoteInput);
+    }
+    this.projectNoteInput="";
+  }
+  deleteNote(noteKey){
+   
+    if (this.projectNotesId==='myNotes'){
+      this.projectService.deleteNote(this.user,noteKey);
+    }
+    else{
+      this.projectService.deleteNote(this.projectNotesId,noteKey);
+    }
+    
   }
 isManager:string;
-  //authenticate manager
-
-
+  //authenticate course
   addUser(){
     this.router.navigate(["addUsers"])
   }
-    // pager object
-  pager: any = {};
-    // paged items
-  pagedItems: Project[];
-
-//search filter
-transform(filter:Project){
-  if(!filter){
- 
- this.pagedItems = this.projectTitles;
-  this.pager = this.pagerService.getPager(this.projectTitles.length, 1);
- this.pagedItems = this.projectTitles.slice(this.pager.startIndex, this.pager.endIndex + 1);
-
-  }
-  let temp:Array<any>=this.projectTitles;
-  temp=temp.filter((item: Project) =>this.applyFilter(item, filter));
-
-  this.pager = this.pagerService.getPager(temp.length, 1);
- this.pagedItems = temp.slice(this.pager.startIndex, this.pager.endIndex + 1);
-}
- applyFilter(project: Project, filter: Project=new Project()): boolean {
-  
-    for (let field in filter) {
-   
-      if (filter[field]) {
-
-          if (project.combined.toLowerCase().indexOf(filter[field].toLowerCase()) === -1) {
-            return false;
-          }
-       
-      }
-    }
-    return true;
-}
-//pagination
-setPage(page: number) {
-  if (page < 1 || page > this.pager.totalPages) {
-      return;
-  }
-  // get pager object from service
-  this.pager = this.pagerService.getPager(this.projectTitles.length, page);
-  // get current page of items
-  this.pagedItems = this.projectTitles.slice(this.pager.startIndex, this.pager.endIndex + 1);
-
-}
-allManagers;
-filter:Project=new Project();
 //child routing
   goToProject(project) {
     this.router.navigate(['projectDetail', project.$key,`${this.params}`]);
   };
-  Prcategory(){
-  }
-  getManagers(){
-    this.allManagers=this.projectService.getAllManagers();
-  }
 inputsForm:FormGroup;
 startDate:Date=new Date();
 title:string;
-manager:string;
+course:string;
 project_number:string;
 endDate:Date;
 status:string;
-client:string;
-climate:string;
-category:string;
-  ngOnInit() {
-    this.inputsForm=this.fb.group({
-      project_number:[this.project_number,[Validators.required]],
-       title:[this.title,[Validators.required]],
-       manager:[this.manager,[Validators.required]],
-       startDate:[this.startDate,[Validators.required]],
-       endDate:[this.startDate,[Validators.required]],
-       client:[this.client,[Validators.required]],
-       climate:[this.climate,[Validators.required]],
-       categoryType:[this.category],
-       market_sector:[this.selectedSector],
-       area:[this.ProjectArea]
-    });
-
-  let userObs=this.userService.getUsers();
-  userObs.subscribe((user)=>{
-  this.Managers=user;
-  })
-  //get projects
-  let projectObs=this.projectService.getProjects();
-  projectObs.subscribe((project)=>{
-    this.projectTitles=project;
-    this.setPage(1);
-    this.getManagers()
-    //get users and check manager
-    this.checkIfManager()
+selectedUsers(users){
+ this.projectMembers=users;
+}
+notesObs:any;
+ngOnInit() {
+  this.inputsForm=this.fb.group({
+      title:[this.title,[Validators.required]],
+      course:[this.course,[Validators.required]],
+      startDate:[this.startDate,[Validators.required]],
+      endDate:[this.startDate,[Validators.required]],
   });
-  this.authService.user.subscribe((val=>{this.routeThis(val)}))
-   }
+this.checkLoggedUser();
+let userObs=this.userService.getUsers();
+userObs.subscribe((user)=>{
+this.Managers=user;
+});
+//get projects
+this.authService.user.subscribe((val=>{this.routeThis(val)}))
+}
   routeThis(val){
       if(!val){
       this.router.navigate([""]);
@@ -259,13 +234,15 @@ category:string;
     this.router.navigate(["learning"])
   }
 checkDate(){
- 
-  if(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()<0 ){
+  if(new Date(this.endDate).getTime() - new Date().getTime()<0 ){
     this.dateInvalid=true;
   }
   else{
     this.dateInvalid=false;
   }
+}
+editProject(projectId){
+  
 }
 
 }

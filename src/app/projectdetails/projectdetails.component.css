@@ -7,7 +7,7 @@ h3 span a{
     cursor: pointer;
 }
 .timeline-wrapper{
-    margin-top: 3em;
+    margin-top: 0em;
 }
 
 .timeline{
@@ -235,4 +235,19 @@ textarea{
 }
 .info{
     margin-top:20px;
+}
+.members{
+    list-style: none;
+    padding:0px;
+}
+.members li {
+    display: inline-block;
+    margin-right: 13px;
+    background: #f8f8f8;
+    padding: 5px;
+    font-size: 12px;
+}
+.members li i{
+    cursor: pointer;
+    color:#C73F50;
 }

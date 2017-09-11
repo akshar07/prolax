@@ -31,6 +31,7 @@ userObj$;
 userKey:string;
 showUser=false;
 getUser(key:string){
+  alert(key)
 this.showUser=true;
 this.userKey=key
   let user;
@@ -56,16 +57,16 @@ saveUser(){
 }
     signup() {
     let user=this.email;
-    this.email=`${this.email}@thorntontomasetti.com`
+    this.email=`${this.email}@scu.edu`
     this.authService.signup(this.email, this.password, this.user_name);
-    this.user=this.database.object(`/users/${user}`);
+    this.user=this.database.object(`/users/${user}scuedu`);
     this.user.set({
     user_name:this.user_name,
     email:this.email,
     admin_access:false,
     manager_access:false,
     imageUrl:this.imageUrl,
-    short_name:user
+    short_name:`${user}scuedu`
     })
     this.userObject.email=this.email;
     this.userObject.imageUrl=this.imageUrl;

@@ -7,6 +7,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule,ReactiveFormsModule  } from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import {PopoverModule} from "ngx-popover";
 
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
@@ -18,14 +20,11 @@ import { AuthService } from './auth.service';
 import { ProjectFilterPipe } from './shared/project-filter.pipe';
 import { ProjectdetailsComponent } from './projectdetails/projectdetails.component';
 import { LoginRouteGuard } from './auth/login-route-guard';
-import { QaComponent } from './qa/qa.component';
-import { Qc1Component } from './qc1/qc1.component';
-import { Qc2Component } from './qc2/qc2.component';
 import { QcResultsComponent } from './qc-results/qc-results.component';
 import { CloseoutComponent } from './closeout/closeout.component';
 import { Http } from '@angular/http';
 import { AddUSersComponent } from './add-users/add-users.component';
-import { TimelineComponent } from './timeline/timeline.component';
+
 import { UserService } from './home/user.service';
 import { ProjectService } from './home/project.service';
 import { ManagerService } from './home/manager.service';
@@ -35,6 +34,7 @@ import { LearningComponent } from './learning/learning.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { UsertimelineComponent } from './usertimeline/usertimeline.component';
 import { SliderComponent } from './slider/slider.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
 
 @NgModule({
   declarations: [
@@ -43,18 +43,15 @@ import { SliderComponent } from './slider/slider.component';
     AuthComponent,
     ProjectFilterPipe,
     ProjectdetailsComponent,
-    QaComponent,
-    Qc1Component,
-    Qc2Component,
     QcResultsComponent,
     CloseoutComponent,
     AddUSersComponent,
-    TimelineComponent,
     TasksTimelineComponent,
     LearningComponent,
     NotificationsComponent,
     UsertimelineComponent,
-    SliderComponent
+    SliderComponent,
+    DropdownComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,7 +60,9 @@ import { SliderComponent } from './slider/slider.component';
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     RouterModule,
     FormsModule,
+    PopoverModule,
     HttpModule,
+    MultiselectDropdownModule,
     ReactiveFormsModule ,
     BrowserAnimationsModule,
       RouterModule.forRoot(

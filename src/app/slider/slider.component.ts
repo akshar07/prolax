@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations';
+import { ManagerService } from '../home/manager.service';
 @Component({
   selector: 'app-slider',
   templateUrl: './slider.component.html',
@@ -17,9 +18,18 @@ import {trigger, state, style, transition, animate} from '@angular/animations';
     ]),
   ]
 })
-export class SliderComponent {
+export class SliderComponent implements OnInit{
+  @Input()
+  userName: any;
+  @Input()
+  userImage: any;
+  constructor(private managerService: ManagerService) {
+
+  }
 menuState:string = 'out';
   toggleMenu() {
      this.menuState = this.menuState === 'out' ? 'in' : 'out';
+  }
+  ngOnInit(){
   }
 }

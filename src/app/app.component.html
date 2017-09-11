@@ -1,18 +1,27 @@
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
-        <button (click)="toggleMenu()" class="hamburger"><span></span></button>
         
-      <a class="navbar-brand" (click)="goToProjects()">QAQC Manager</a>
+      <a class="navbar-brand" (click)="goToProjects()">Prolax <span> BETA</span></a>
     </div>
     <ul class="nav navbar-nav">
         
     </ul>
     <ul class="nav navbar-nav navbar-right">
-        <li><a>SUSTAINABILITY | ThorntonTomasetti</a></li>
+        <li><a>SCU</a></li>
         <li><a (click)="logout()" *ngIf="checkLogin()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
     </ul>
   </div>
 </nav>
-<app-slider [@slideInOut]="menuState"></app-slider>
+
 <router-outlet></router-outlet>
+<footer class="footer">
+    <div class="container">
+      <p class="text-muted pull-left"> Developed By: Akshar Takle
+         <span class="icons"><a href=""><i class="fa fa-facebook-official" aria-hidden="true"></i></a></span>
+         <span class="icons"><a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a></span> 
+         <span class="icons"><a href="mailto:atakle@scu.edu" ><i class="fa fa-envelope" aria-hidden="true"></i></a></span>                  
+      </p>        
+      <p class="text-muted pull-right"> For Bugs or Issues, Please contact: atakle@scu.edu</p>
+    </div>
+  </footer>

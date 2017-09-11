@@ -16,7 +16,7 @@ export class AuthService {
     this.user = firebaseAuth.authState;
   }
   signup(email: string, password: string, displayName: string) {
-    alert(displayName)
+    alert(email)
     this.firebaseAuth
       .auth
       .createUserWithEmailAndPassword(email, password)

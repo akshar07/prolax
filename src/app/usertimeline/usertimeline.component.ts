@@ -29,25 +29,26 @@ destroy(){
   getuserTasks(){
     this.projectService.getMyTasks(this.user)
       .subscribe((projects)=>{
+   
         console.log(projects)
         this.projectname=[];
         let taskKeys=[];
         projects.forEach((project,i)=>{
-       
-          this.projectname=[...this.projectname,...project.project_name]// get project names
-          console.log(this.projectname)
-          this.groups = new vis.DataSet();
-          for (let g=0; g<this.projectname.length;g++) {
-
-            this.groups.add({id: g, content:this.projectname[g]});
+         
+          let keys;
+          if(Object.keys(project).includes('tasks')){
+            keys=Object.keys(project['tasks']);
+           taskKeys=[...keys];
+           this.projectname=[...this.projectname,...project.project_name]// get project names
           }
-      
-          let keys=Object.keys(project['tasks']);
-          taskKeys=[...keys]
-       
           taskKeys.forEach(key=>{
   
             this.formatTask((project['tasks'][key]),i);
+            this.groups = new vis.DataSet();
+            for (let g=0; g<this.projectname.length;g++) {
+  
+              this.groups.add({id: g, content:this.projectname[g]});
+            }
           })
         });
       })
@@ -59,9 +60,12 @@ destroy(){
     console.log(this.userTasks)
   }
   ngOnInit() {
+    this.userTasks=[];
+    this.projectname=[];
+    this.groups = new vis.DataSet();
     this.getuserTasks();
     this.load=true;
-    setTimeout(()=>{this.render();this.load=false;},3000);
+    setTimeout(()=>{this.render();this.load=false;},1000);
   }
 
 }

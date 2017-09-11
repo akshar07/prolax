@@ -14,7 +14,7 @@ export class AuthComponent implements OnInit {
   constructor(public authService: AuthService, private router:Router) {}
   username:string="";
   login() {
-    this.email=`${this.email}@thorntontomasetti.com`;  
+    this.email=`${this.email}@scu.edu`;  
     this.authService.login(this.email, this.password)
     this.email = this.password = '';    
   }
@@ -22,7 +22,7 @@ export class AuthComponent implements OnInit {
     this.authService.logout();
   }
   reset(email){
-    email=`${email}@thorntontomasetti.com`;
+    email=`${email}@scu.edu`;
     alert("email sent to "+email)
     this.authService.resetPassword(email)
   }

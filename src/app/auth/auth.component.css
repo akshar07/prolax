@@ -1,18 +1,12 @@
 .login-form{
-    position: absolute;
-    top:38%;
     padding:20px;
-    left:50%;
-    transform: translateX(-50%);
-    height: 200px;
-    width:500px;
-    border:1px solid #ccc;
-   
+   background : #FFFFFF;
+
 } 
 .login-form input{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     height:30px;
-    width: 44%;
+    
     padding-left: 10px;
 } 
 .reset{
@@ -21,4 +15,41 @@
 .reset a{
    
     cursor: pointer;
+}
+h4{
+    float:left;
+    margin-top:10px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 50px;
+}
+.follow{
+    font-size:19px;
+}
+.maroon{
+    color:#CF5B69;
+}
+.beta{
+    color:#23527C;
+    font-size: 30px;
+}
+img{
+    width: 100%;
+    height:100%;
+}
+.email{
+    width:60%;
+}
+.login,.reset{
+    margin-top:25px;
+    margin-bottom: 5px;
+}
+.no-padding{
+    padding:0;
+}
+.brand , .login-form{
+    height:110px;
+}
+a{
+    cursor: pointer;
+    text-decoration: none;
 }

@@ -1,21 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
 body{
     color: #2c2c2c;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
 .vis-time-axis .vis-grid.vis-minor {
-    border-color: #fff
+    /* border-color: #fff */
 }
-.Milestone{
-    background-color:#feffb0;;;
+.vis-foreground .Milestone{
+    background-color:#D18996;
+    border-color: #cb7887;
+
+}
+.vis-background .Milestone{
     border-color: #cb7887;
 }
-.Task{
-    background-color: #fafafa;;
-    border-color: #cb7887;
+.vis-dot.Milestone {
+    border-width: 6px;
+    border-radius: 6px;
+}
+.vis-foreground .Task{
+    /* background-color: #F7F7F7;
+    border-color: #F7F7F7; */
+}
+.vis-background .Task{
+    border-color: #ccc;
+}
+.vis-dot .Task {
+    background-color: #ccc;
 }
 .vis-inner{
     text-transform: uppercase;
 }
 .vis-labelset .vis-label .vis-inner {
     color: #c73f50;
+}
+
+.vis-foreground .Task{
+    background-color: #F7F7F7;
+    border-color: #F7F7F7;
+}
+.vis-time-axis .vis-grid.vis-major {
+    border:none !important;
+}
+.vis-text {
+    font-size: x-small;
+}
+.vis-item {
+    font-size: smaller;
+}
+
+.vis-time-axis .vis-grid.vis-vertical {
+    border-left: 0;
+
 }

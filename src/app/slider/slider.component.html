@@ -1,8 +1,6 @@
-<ul>
-  <li><a class="nav-link"routerLink="uvalue">U-value</a></li>
-  <li><a class="nav-link"routerLink="qaqc">QAQC</a></li>
-  <li>Menu Item</li>
-  <li>Menu Item</li>
-  <li>Menu Item</li>
-  <li>Menu Item</li>
-</ul>
+<div *ngIf="userImage" class="img-circle ">
+    <img class="img-circle slider-avatar" [src]="userImage" />
+</div>
+<div class="info">
+  <p>{{userName}}</p>
+</div>

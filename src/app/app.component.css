@@ -53,5 +53,35 @@ a{
   .navbar-brand {
       float:right !important;
   }
-
-
+.navbar-brand span{
+    font-size: 13px;
+}
+.navbar-default .navbar-brand {
+    color: #f8f8f8;
+}
+.navbar-default {
+    background-color: #c73f50;
+    border-color: #c73f50;
+}
+.navbar-default .navbar-nav>li>a {
+    color: #f8f8f8;
+}
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background-color: #2a072a;
+}
+.text-muted {
+    color: #f9f9f9;
+    margin-top: 7px;
+    margin-bottom: 0px;
+    font-size: 12px;
+}
+.icons{
+    margin-left: 10px;
+}
+.icons a{
+    color: #f9f9f9;
+}

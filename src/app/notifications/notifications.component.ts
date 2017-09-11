@@ -32,11 +32,19 @@ export class NotificationsComponent implements OnInit {
       this.isManager=`${user.manager_access}`;
       this.tasks=user.tagged;
       this.userId=user.short_name
+      let projectKeys;
       let taskKeys;
-      taskKeys=Object.keys(this.tasks);
-      taskKeys.forEach(key => {
-        this.notifications.push(this.tasks[key])
-      });
+      projectKeys=Object.keys(this.tasks);
+      projectKeys.forEach(pr_key=>{
+        taskKeys=Object.keys(this.tasks[pr_key]);
+        console.log(taskKeys)
+        taskKeys.forEach(key => {
+          this.notifications.push(this.tasks[pr_key][key])
+        });
+      })
+     
+     
+      console.log(this.notifications)
       if(user.manager_access){
         this.params="aabsvchfo134852f";
       }
@@ -46,14 +54,16 @@ export class NotificationsComponent implements OnInit {
     }))
     })
   }
-  clearOne(taskId){
-    this.projectService.clearOneNotification(this.userId,taskId);
+  clearOne(taskId,projectId){
+    this.projectService.clearOneNotification(this.userId,taskId,projectId);
     this.checkIfManager();
   }
   goToTask(projectKey){
         this.router.navigate(['projectDetail',projectKey,`${this.params}`]);
   }
   ngOnInit() {
+    this.notifications=[];
+    this.tasks=[];
   this.checkIfManager();
   }
 

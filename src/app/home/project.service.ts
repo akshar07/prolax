@@ -6,7 +6,6 @@ import { Project } from './project';
 @Injectable()
 export class ProjectService {
     taskQC1Observable: FirebaseObjectObservable<any>;
-
     taskKey: any;
     timelineKey: any;
     taskObs: FirebaseObjectObservable<any>;
@@ -15,7 +14,6 @@ export class ProjectService {
     timeline: FirebaseObjectObservable<any>;
     projects: FirebaseListObservable<any[]>;
     database: AngularFireDatabase;
-
     constructor(
         db: AngularFireDatabase,
         public authService: AuthService
@@ -23,13 +21,34 @@ export class ProjectService {
        this.database=db; 
     }
     usersArray:Array<any>
-    getProjects(){
-        this.projects = this.database.list('/projects')
+    getProjects(userId, bool){
+        this.projects = this.database.list(`/users/${userId}/projects`,{
+            query:{
+                orderByChild:"archived",
+                equalTo:bool
+            }
+        })
         return this.projects;
     }
-    addProject(project){
-       return this.projects.push(project).key
+    addProject(project,title,course,members){
+    let key= this.database.list(`/projects`).push(project).key;
+    members.forEach(member=>{
+        this.database.object(`users/${member.key}/projects/${key}`).set({
+            name:title,course:course,project_members:members,archived:false
+        });
+    })
+    return key;
     }
+    archiveProject(projectId,members){
+        let key=projectId;
+        members.forEach(member=>{
+            this.database.object(`users/${member.key}/projects/${key}`).update({
+              archived:true
+            });
+            this.database.object(`userTasks/${member.key}/${projectId}`).remove();
+        })
+        return key;
+        }
     updateProjectStatus(key,val){
         let projectObj = this.database.object('projects/' + key);
         projectObj.update({
@@ -40,11 +59,19 @@ export class ProjectService {
         this.timeline = this.database.object(`/projecttimeline/${key}`);
         this.timeline.set(timeline)
     }
-    deleteProject(key){
-        this.projects.remove(key);
+    deleteProject(key,members){
+        console.log(members)
+        this.database.object(`projects/${key}`).remove();
         this.timelineArray=this.database.list(`/projecttimeline`);
         this.timelineArray.remove(key);
+        members.forEach(member=>{
+            this.database.object(`users/${member}/projects/${key}`).remove();
+            this.database.object(`userTasks/${member}/${key}`).remove();
+            this.database.object(`users/${member}/tagged/${key}`).remove();
+        });
         this.database.object(`/closeouts/${key}`).remove();
+        this.database.object(`/projectNotes/${key}`).remove();
+        this.database.object(`/task-logs/${key}`).remove();
     }
     getTimeline(timelineId){
         return this.timelineTasks = this.database.list(`/projecttimeline/${timelineId}/tasks`)
@@ -65,7 +92,6 @@ export class ProjectService {
          this.taskObs.update(task)
     }
     editNotification(task,user,taskId){
-        alert(taskId+user)
         this.database.object(`users/${user}/tagged/${taskId}`).update(task)
     }
     deleteTask(userId){
@@ -73,26 +99,6 @@ export class ProjectService {
         let userObsTask=this.database.object(`users/${userId}/tagged/${this.taskKey}`);
         userObsTask.remove();
         this.database.object(`users/${userId}/tagged/${this.taskKey}add`).remove();
-    }
-    addQC1(timelineId,taskId,QC1){
-        this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
-        this.taskQC1Observable.set(QC1);
-    }
-    getQC1(timelineId,taskId){
-        return this.taskQC1Observable=this.database.object(`/QC1/${timelineId}/${taskId}`);
-    }
-    editqC1(taskId,timelineId,QC1){
-        this.database.object(`/QC1/${timelineId}/${taskId}`).update(QC1);
-    }
-    addQC2(timelineId,taskId,QC2){
-        this.taskQC1Observable=this.database.object(`/QC2/${timelineId}/${taskId}`);
-        this.taskQC1Observable.set(QC2);
-    }
-    getQC2(timelineId,taskId){
-        return this.taskQC1Observable=this.database.object(`/QC2/${timelineId}/${taskId}`);
-    }
-    editqC2(taskId,timelineId,QC2){
-        this.database.object(`/QC2/${timelineId}/${taskId}`).update(QC2);
     }
     closeProject(projectId,closeout){
         let closeoutObs=this.database.object(`/closeouts/${projectId}`);
@@ -105,19 +111,6 @@ export class ProjectService {
         let closeoutObs=this.database.object(`/closeouts/${projectId}`);
         closeoutObs.update(closeout);
     }
-    //check
-    // addTimelineTasks(user,assigned_to,projectId,project_name,task_key,dueDate,task_name){
-    //     let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/projectName`)
-    //         x.set(project_name);
-    //     let y=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
-    //         y.set(task_key);
-    //     }
-    // editTimelineTasks(user_before,user,assigned_to,projectId,task_key){
-    //     let y=this.database.object(`userTasks/${user_before}/managing_projects/${projectId}/staffList/${user_before+task_key}`)
-    //     y.remove();
-    //     let x=this.database.object(`userTasks/${user}/managing_projects/${projectId}/staffList/${assigned_to+task_key}`)
-    //     x.set(task_key);
-    // }
     addTasksForMe(user,projectId,project_name,task_key,dueDate,task_name,type){
         let y=this.database.object(`userTasks/${user}/${projectId}/project_name`);
         y.set(project_name)
@@ -128,8 +121,14 @@ export class ProjectService {
             className:type
         })
     }
+ 
+    addTaskNotif(userId, user,projectId, taskId,taskName,dueDate){
+        this.database.object(`users/${userId}/tagged/${projectId}/${taskId}`)
+            .set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,type:true,manager:user})
+    }
+
     editTasksForMe(user_before,user,projectId,task_key,dueDate,task_name,task_type){
-        alert(user_before)
+      
         let z=this.database.object(`userTasks/${user_before}/${projectId}/tasks/${task_key}/`)
         z.remove();
         let x=this.database.object(`userTasks/${user}/${projectId}/tasks/${task_key}/`)
@@ -139,8 +138,8 @@ export class ProjectService {
         });
     }
     deleteTasksForMe(user,task_key,projectId){
-        alert(user+ projectId+task_key)
-        let z=this.database.object(`userTasks/${user}/${projectId}/${task_key}/`)
+      
+        let z=this.database.object(`userTasks/${user}/${projectId}/tasks/${task_key}`)
         z.remove();
     }
     getMyTasks(user){
@@ -160,7 +159,7 @@ export class ProjectService {
     }
     tagUser(projectId,taskId,userId,taskName,dueDate,manager,type){
         if(type==false){
-            let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
+            let userObs=this.database.object(`users/${userId}/tagged/${projectId}/${taskId}`);
             userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager,type:type});    
         }
         else{
@@ -168,8 +167,8 @@ export class ProjectService {
             userObs.set({task_name:taskName,due_date:dueDate,project_id:projectId,task_id:taskId,manager:manager,type:type});    
         }
     }
-    clearOneNotification(userId,taskId){
-        let userObs=this.database.object(`users/${userId}/tagged/${taskId}`);
+    clearOneNotification(userId,taskId,projectId,){
+        let userObs=this.database.object(`users/${userId}/tagged/${projectId}/${taskId}`);
         userObs.remove();
     }
     getManagerProjects(manager){
@@ -179,5 +178,20 @@ export class ProjectService {
                 equalTo:manager
             }
         })
+    }
+    getImage(user){
+        return this.database.object(`users/${user}/imageUrl`)
+    }
+    getEditProject(key){
+       return this.database.object(`projects/${key}`)
+    }
+    addProjectNote(projectKey,note){
+        this.database.list(`projectNotes/${projectKey}`).push(note)
+    }
+    getProjectnotes(Id){
+        return this.database.list(`projectNotes/${Id}`);
+    }
+    deleteNote(id,noteId){
+        this.database.object(`projectNotes/${id}/${noteId}`).remove();
     }
 }

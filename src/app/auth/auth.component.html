@@ -1,25 +1,32 @@
-
-<div class="login-form">
-  <div class="col-lg-3">
-    <label>Email</label>
+<div class="container">
+  <div class="col-lg-6 no-padding brand">
+      <H4> <span class="maroon">Prolax</span>  <span class="beta">BETA</span> <span class="follow">Relax &#9749;... its just a project!</span></H4>    
   </div>
-   <div class="col-lg-9">
-     <input type="email" [(ngModel)]="email" placeholder="email"> @thorntontomasetti.com
-  </div>
-   <div class="col-lg-3"*ngIf="!resetPassword">
-    <label>Password</label>
-  </div>
-   <div class="col-lg-9"*ngIf="!resetPassword">
-    <input type="password" [(ngModel)]="password"(keyup.enter)="login()" placeholder="password" >
-  </div>
-  <button (click)="reset(email)" [disabled]="!email" *ngIf="resetPassword">
-    Send Mail
-  </button>
-  <button (click)="login()" [disabled]="!email || !password" *ngIf="!resetPassword">
-    Login
-  </button>
-  <div class="reset">
-    <a (click)="resetPassword=false" *ngIf="resetPassword"> back</a>
-    <a (click)="resetPassword=true" *ngIf="!resetPassword"> Reset Password</a>
+  <div class="login-form col-lg-6 no-padding">
+    <div class="col-lg-6">
+      <label>Email</label><br>
+      <input type="email" [(ngModel)]="email" class="email" placeholder="xyz">  @scu.edu
+    </div>
+     <div class="col-lg-4"*ngIf="!resetPassword">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="password"(keyup.enter)="login()" placeholder="password" ><br>
+      <a (click)="resetPassword=true" *ngIf="!resetPassword"> Reset Password</a>
+    </div>
+    <div class="col-lg-2 no-padding" *ngIf="!resetPassword">
+          <button (click)="login()" class="login pull-right" [disabled]="!email || !password" *ngIf="!resetPassword">
+            Login
+          </button>
+    </div>
+   <div class="col-lg-4"*ngIf="resetPassword">
+      <button (click)="reset(email)" class="reset" [disabled]="!email" *ngIf="resetPassword">
+          Send Mail
+        </button><br>
+        <a (click)="resetPassword=false" *ngIf="resetPassword"> Back</a>
+   </div>
+    <div class="reset">
+     
+    </div>
   </div>
 </div>
+
+<img src="http://www.meredith.com/sites/default/files/CreativeServices.jpg" />

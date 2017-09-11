@@ -1,5 +1,7 @@
+
 <div class="container">
-    <div id="delete" class="modal fade" role="dialog">
+    <app-slider [@slideInOut]="menuState" [userImage]="userImage" [userName]="userName"></app-slider>
+<div id="delete" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -9,7 +11,8 @@
         <h4 class="modal-title">Delete Project</h4>
       </div>
       <div class="modal-body">
-        <p>Are you Sure?</p>
+        <p class="warning">We encourage to archive the project for future refrences</p>
+        <p>Are you sure you want to delete?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -19,93 +22,141 @@
 
   </div>
 </div>
+<!-- archive -->
+<div id="archive" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Archive Project</h4>
+        </div>
+        <div class="modal-body">
+          <p>Done with the project?  </p>
+          <p> Save in our database to better manage your workspace</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-default" data-dismiss="modal"(click)="archiveProject()" >Yes</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  <!-- archive end -->
 <div class="timeline">
-  <div class="col-lg-12">
+  <div class="col-lg-12 no-padding">
       <div class="user col-lg-6 no-padding">
-          Welcome <span class="display-name">{{userName}}</span> <app-notifications></app-notifications>
+          Welcome <span class="display-name" (click)="toggleMenu()">{{userName}}</span> <app-notifications></app-notifications>
       </div>
       <div class="col-lg-3 add-users no-padding">
-        <span *ngIf="isAdmin==='true'"><a  (click)="addUser()"><i class="fa fa-address-card-o" aria-hidden="true"></i> Add Users</a></span>
+        <span><a  (click)="addUser()"><i class="fa fa-address-card-o" aria-hidden="true"></i> Add Users</a></span>
       </div>
       <div class="learning col-lg-3 no-padding">
             <a (click)="goToLearning()" class="pull-right"><i class="glyphicon glyphicon-education "></i>  Lessons Learned</a>
       </div>
       <div class="clearfix"></div>
-      <div *ngIf="isManager==='true'">
-        <app-timeline [Key]="userkey" [manager]="isManager"></app-timeline>
-      </div> 
-      <div *ngIf="isManager==='false'">
+      <div *ngIf="user">
           <app-usertimeline [user]="user"></app-usertimeline>
       </div>
   </div>
 </div>
-  <div class="home-wrapper" *ngIf="isManager">
-      <div  class="col-lg-12 sus-header">
-        <h1 class="page-header">Project List </h1>
-        
+  <div class="home-wrapper" >
         <!-- add new project -->
-        <button type="button" class="btn btn-default btn-sm pull-right" *ngIf="isManager==='true'" data-toggle="modal" data-target="#myModal">New Project</button>
         <!-- search -->
-        <div class="col-xs-5 row mb-2">
-          <input  type="text"  
-                placeholder="Search: project number, name, or manager" 
-                name="Search" 
-                [(ngModel)]="filter.combined"
-                class="form-control"
-                (keyup)="transform(filter)"> 
-        </div>
-      </div>
+       <div class="col-lg-6 no-padding notes-container">
+          <div class="result-container">
+              <div class="header">
+                  <h1 > <i class="fa fa-sticky-note" aria-hidden="true"></i> NOTES</h1>
+                  <select type="number" [(ngModel)]="projectNotesId" class="projectSelect pull-right" (ngModelChange)="getProjectNotes()">
+                      <option selected="selected" value="{{user}}">My Notes</option>
+                        <option *ngFor="let project of projectListObs | async; let i=index" [ngValue]="project.$key">
+                            {{project?.name}}
+                    </option>
+                  </select>
+                  <div class="clearfix"></div>
+              </div>  
+              <div class="note-wrapper">
+                  <div class="notes">
+                    <ul class="note-list" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+                      <li *ngIf="(notesObs | async)?.length==0">
+                          <div class="empty" >
+                              Enter Your Notes Here !
+                          </div>
+                      </li>
+                      <li *ngFor="let note of notesObs | async">
+                        <div class="paper" >
+                          <p>{{note.$value}} </p>
+                          <span (click)="deleteNote(note.$key)"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div id="noteInput">
+                      <textarea name=""(keyup.enter)="addNoteToProject()" id="" cols="30" rows="3" [(ngModel)]="projectNoteInput"></textarea>
+                      <button type="button" class="btn btn-sm note-action-button" (click)="addNoteToProject()"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                  </div>
+               </div>
+          </div>
+   
+        
+       </div>
       <!-- results list -->
-      <div class="results col-lg-12">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th class="col-lg-1"># </th>
-              <th class="col-lg-3">Project Name </th>
-              <th class="col-lg-2"> Manager </th>
-              <th class="col-lg-1">Client </th>
-              <th class="col-lg-1">CZ</th>
-              <th class="col-lg-2"> Market Sector </th>
-              <th class="col-lg-3">Scope </th>
-              <th class="col-lg-2" *ngIf="isAdmin==='true'">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let res of pagedItems " >
-              <td (click)="goToProject(res)">{{res.project_number}}</td>
-              <td (click)="goToProject(res)">{{res.title}}</td>
-              <td (click)="goToProject(res)">{{res.manager}}</td>
-              <td (click)="goToProject(res)">{{res.client}}</td>
-              <td (click)="goToProject(res)">{{res.climate_zone}}</td>
-              <!-- <td *ngIf="res.projectStatus">Closed</td>
-              <td *ngIf="!res.projectStatus">Open</td> -->
-              <td (click)="goToProject(res)">{{res.market_sector}}</td>
-              <td (click)="goToProject(res)">{{res.category}}</td>
-              <td *ngIf="isAdmin==='true'"><button type="button" class="btn btn-default btn-xs"data-toggle="modal" data-target="#delete" (click)="getProject(res.$key,res)">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>      
+      <div class="results col-lg-6 no-padding">
+        <div class="result-container">
+          <div class="header">
+              <h1 > <i class="fa fa-folder-open" aria-hidden="true"></i> Your Projects 
+                   <popover-content #myPopover  placement="bottom" [closeOnClickOutside]="true">
+                         <p (click)="showArchived()" *ngIf="!showingArchived">Show Archived</p>
+                         <p (click)="showCurrent()" *ngIf="showingArchived">Show Current</p>
+                   </popover-content>
+              </h1>
+              <button type="button" class="btn btn-default btn-sm pull-right" 
+                     data-toggle="modal" data-target="#myModal"><i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </button> 
+              <button class="btn btn-default btn-sm pull-right archived" [popover]="myPopover">
+                <i class="fa fa-suitcase" aria-hidden="true"></i>
+              </button>
+              <div class="clearfix"></div>                     
+          </div>
+          <div class="table-box">
+              <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th class="col-lg-3">Project Name </th>
+                      <th class="col-lg-2"> Course </th>
+                      <th class="col-lg-2" >Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let res of projectListObs | async " >
+                      <td (click)="goToProject(res)">{{res.name}}</td>
+                      <td (click)="goToProject(res)">{{res.course}}</td>
+                      <td>
+                        <button type="button" 
+                                class="btn btn-default btn-xs"
+                                data-toggle="modal" 
+                                data-target="#delete" 
+                                (click)="getProject(res.$key,res,res.project_members)">
+                            Delete
+                        </button>
+                        <button class="archiveButton btn btn-default btn-xs" 
+                                (click)="getProjectInfo(res.$key,res.project_members)"
+                                data-toggle="modal" 
+                                data-target="#archive"
+                                *ngIf="!showingArchived"  >
+                                Archive
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+          </div>
+          
+        </div>
+      </div>  
+      <div class="clearfix"></div>    
   </div>
-  <div class="col-lg-12">
-    <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm">
-      <li [ngClass]="{disabled:pager.currentPage === 1}">
-        <a (click)="setPage(1)">First</a>
-      </li>
-      <li [ngClass]="{disabled:pager.currentPage === 1}">
-        <a (click)="setPage(pager.currentPage - 1)">Previous</a>
-      </li>
-      <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
-        <a (click)="setPage(page)">{{page}}</a>
-      </li>
-      <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
-        <a (click)="setPage(pager.currentPage + 1)">Next</a>
-      </li>
-      <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
-        <a (click)="setPage(pager.totalPages)">Last</a>
-      </li>
-    </ul>
-</div>
+
 
 
 <!-- Modal -->
@@ -120,18 +171,6 @@
       </div>
       <div class="modal-body">
        <form class="form-horizontal" [formGroup]="inputsForm">
-          <div class="form-group">
-            <label class="control-label col-sm-4" for="project_number">Project Number:</label>
-            <div class="col-sm-6">
-              <input  type="text" 
-                      class="form-control" 
-                      placeholder="Project Number"
-                      formControlName="project_number"
-                      [(ngModel)]="project_number"
-                      name="project_number">
-                     <p *ngIf="inputsForm.controls.project_number.dirty && inputsForm.controls.project_number?.errors" class="formInvalid">Project Number is Required</p>
-            </div>
-          </div>
           <div class="form-group" >
             <label class="control-label col-sm-4" for="pwd">Project Name:</label>
             <div class="col-sm-6"> 
@@ -144,78 +183,15 @@
              <p *ngIf="inputsForm.controls.title.dirty && inputsForm.controls.title?.errors" class="formInvalid">Project Name is Required</p>
             </div>
           </div>
-           <div class="form-group" >
-            <label class="control-label col-sm-4" for="pwd">Manager Name:</label>
-            <div class="col-sm-6"> 
-              <select type="text" [(ngModel)]="manager" formControlName="manager">
-                  <option *ngFor="let manager of allManagers|async" [ngValue]="manager.user_name">{{manager.user_name}}</option>
-              </select>
-              <p *ngIf="inputsForm.controls.manager.dirty && inputsForm.controls.manager?.errors" class="formInvalid">Manager is Required</p>
-            </div>
-          </div>
           <div class="form-group" >
-            <label class="control-label col-sm-4" for="pwd">Client Name: </label>
+            <label class="control-label col-sm-4" for="pwd">Course </label>
             <div class="col-sm-6"> 
               <input  type="text" 
                       class="form-control" 
-                      placeholder="Enter Client Name"
-                      formControlName="client"
-                      [(ngModel)]="client"
-                      name="client">
-                <p *ngIf="inputsForm.controls.client.dirty && inputsForm.controls.client?.errors" class="formInvalid">Client is Required</p>
-            </div>
-          </div>
-          <div class="form-group" >
-            <label class="control-label col-sm-4" for="pwd">Service:</label>
-            <div class="col-sm-6"> 
-              <select type="text" [(ngModel)]="category" formControlName="categoryType" (ngModelChange)="Prcategory()">
-                <option *ngFor="let category of projectCategory" [ngValue]="category">{{category}}</option>
-              </select>
-          </div>
-          </div>
-          <div class="form-group" >
-              <label class="control-label col-sm-4" for="pwd">Market Sector:</label>
-              <div class="col-sm-6"> 
-                <select type="text" [(ngModel)]="selectedSector" formControlName="market_sector">
-                  <option *ngFor="let sector of market_sector" [ngValue]="sector">{{sector}}</option>
-                </select>
-            </div>
-            </div>
-            <div class="form-group" >
-                <label class="control-label col-sm-4" for="pwd">Project Area</label>
-                <div class="col-sm-6"> 
-                    <input  
-                    (ngModelChange)="ProjectArea = $event" 
-                    type="number" 
-                    name="ProjectArea"
-                    formControlName="area">
-                    <p *ngIf="inputsForm.controls.area.dirty && inputsForm.controls.area?.errors" class="formInvalid">Area is Required</p>
-                  
-              </div>
-              </div>
-          <div class="form-group" >
-            <label class="control-label col-sm-4" for="pwd">Climate Zone:</label>
-            <div class="col-sm-6"> 
-              <input  type="text" 
-                      class="form-control" 
-                      placeholder="Climate Zone"
-                      formControlName="climate"
-                      [(ngModel)]="climate"
-                      name="climate">
-                       <p *ngIf="inputsForm.controls.climate.dirty && inputsForm.controls.climate?.errors" class="formInvalid">Climate Zone is Required</p>
-
-            </div>
-          </div>
-          <div class="form-group"> 
-           <label class="control-label col-sm-4" for="pwd">Start Date:</label>
-            <div class="col-sm-6"> 
-             <input  
-                    (ngModelChange)="startDate = $event" 
-                    type="date" 
-                    name="startDate"
-                    formControlName="startDate">
-                    <p *ngIf="inputsForm.controls.startDate.dirty && inputsForm.controls.startDate?.errors" class="formInvalid">Start Date is Required</p>
-
+                      placeholder="Enter Course Name"
+                      formControlName="course"
+                      [(ngModel)]="course"
+                      name="course">
             </div>
           </div>
            <div class="form-group"> 
@@ -230,11 +206,13 @@
                 <p *ngIf="dateInvalid" class="formInvalid">Enter Due Date after Start Date</p>
             </div>
           </div>
-          <!-- <div class="form-group"> 
-            <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default">Submit</button>
-            </div>
-          </div> -->
+          <div>
+              <label class="control-label col-sm-4" for="pwd">Members</label>
+              <div class="col-sm-6"> 
+                <app-dropdown *ngIf="Managers.length>0" [users]="Managers" (onUserSelect)="selectedUsers($event)" ></app-dropdown>
+              </div>
+              <div class="clearfix"></div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

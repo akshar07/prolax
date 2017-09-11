@@ -19,16 +19,12 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./projectdetails.component.css']
 })
 export class ProjectdetailsComponent implements OnInit {
-  projectArea: number;
-  marketSector: string;
-  projectCategory: any;
+  loggedInName: string;
+  url: any;
   user_short_before: string;
   loggedInUser: string;
   @ViewChild(TasksTimelineComponent) timelineCmp: TasksTimelineComponent;
-  projectManager: any;
   project_name: any;
-  projectClient: any;
-  project_number: any;
   projectID: any;
   taskref: any;
   user_key: string;
@@ -63,7 +59,7 @@ export class ProjectdetailsComponent implements OnInit {
   }
   //modelling inputs
   categoryType: string;
-  assigned_to =  { $key: "", imageUrl: "",user_name:"",short_name:"" } 
+  assigned_to:{name:"",key:""}
   taskObj = {
     taskName: "",
     categoryType: "",
@@ -74,10 +70,8 @@ export class ProjectdetailsComponent implements OnInit {
     hours: 0,
     status: false,
     user_short:"",
-    imageUrl: this.assigned_to.imageUrl,
   }
   clean() {
-    this.assigned_to = { $key: "", imageUrl: "", user_name: "",short_name:"" } 
     this.categoryType=null;
     this.taskObj = {
       taskName: "",
@@ -88,7 +82,6 @@ export class ProjectdetailsComponent implements OnInit {
       details: "",
       hours: 0,
       status: false,
-      imageUrl:"",
       user_short:""
     }
   }
@@ -125,8 +118,15 @@ export class ProjectdetailsComponent implements OnInit {
   }
   toNumberUsers() {
     
-    this.taskObj.assigned_to = this.assigned_to.user_name
-    this.taskObj.imageUrl = this.assigned_to.imageUrl;
+    this.projectService.getImage(this.assigned_to.key)
+      .subscribe((url)=>{
+       console.log(url)
+        this.url=url  
+        this.taskObj.assigned_to = this.assigned_to.name;
+        this.taskObj.user_short = this.assigned_to.key;
+      })
+    
+
   }
   timeline_key: "";
   onComplete(bool) {
@@ -147,6 +147,7 @@ export class ProjectdetailsComponent implements OnInit {
     this.managerService.loggedInUser()
       .subscribe(user=>{
         this.loggedInUser=user.email;
+        this.loggedInName=user.displayName;
         let $pos =  this.loggedInUser.indexOf('@');
         this.loggedInUser= this.loggedInUser.substr(0, $pos);
         this.loggedInUser= this.loggedInUser.charAt(0).toUpperCase()+ this.loggedInUser.charAt(1).toUpperCase() +  this.loggedInUser.slice(2);
@@ -155,15 +156,9 @@ export class ProjectdetailsComponent implements OnInit {
       
     let timelineInfo= this.projectService.getTimelineInfo(this.projectID);
     timelineInfo.subscribe((info)=>{
-      this.project_number=info.project_number;
-      this.projectClient=info.client;
       this.project_name=info.project_name;
-      this.projectManager=info.manager;
-      this.projectCategory=info.category;
-      this.marketSector=info.market_sector;
-      this.projectArea=info.area
     })
-    this.userList=this.userService.getUsers();
+    this.userList=this.userService.getProjectUsers(this.projectID);
     let projectTasksObs=this.projectService.getTimeline(this.projectID);
 
     projectTasksObs.subscribe(tasks=>{
@@ -190,9 +185,9 @@ export class ProjectdetailsComponent implements OnInit {
     this.authService.user.subscribe((val => { this.routeThis(val) }));
 
   }
-  tagUser(){
-    this.projectService.tagUser(this.projectID,this.taskId,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate,this.projectManager,false);
-  }
+  // tagUser(){
+  //   this.projectService.tagUser(this.projectID,this.taskId,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate,this.loggedInUser,false);
+  // }
   routeThis(val) {
     if (!val)
       this.router.navigate([""])
@@ -256,6 +251,7 @@ export class ProjectdetailsComponent implements OnInit {
     }
   }
   addTask() {
+
     this.edit = false;
     let task_key= this.projectService.addTasks({
       taskName: this.taskObj.taskName,
@@ -266,14 +262,13 @@ export class ProjectdetailsComponent implements OnInit {
       details: this.taskObj.details,
       hours: this.taskObj.hours,
       status: false,
-      imageUrl: this.taskObj.imageUrl,
-      user_short:this.assigned_to.short_name,
-      qc1:{},
-      qc2:{},
-      comments:{}
+      user_short:this.assigned_to.key,
+      comments:{},
+      imageUrl:this.url.$value
     });
-    this.projectService.tagUser(this.projectID,task_key,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate,this.projectManager,true);
-    this.projectService.addTasksForMe(this.assigned_to.short_name,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName,this.taskObj.categoryType)
+    this.projectService.addTaskNotif(this.assigned_to.key,this.loggedInName,this.projectID,task_key,this.taskObj.taskName,this.taskObj.dueDate)
+    // this.projectService.tagUser(this.projectID,task_key,this.assigned_to,this.taskObj.taskName,this.taskObj.dueDate,this.loggedInUser,true);
+    this.projectService.addTasksForMe(this.assigned_to.key,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName,this.taskObj.categoryType)
     this.inputsForm.reset();
     this.sortUp = true;
     this.timelineCmp.destroy();
@@ -281,7 +276,6 @@ export class ProjectdetailsComponent implements OnInit {
     this.timelineCmp.drawTimeline();
   }
   resetForm() {
-    this.assigned_to =  { $key: "", imageUrl: "", user_name:this.taskObj.assigned_to,short_name:"" } 
     this.taskObj={
       taskName: "",
       categoryType: "",
@@ -291,7 +285,6 @@ export class ProjectdetailsComponent implements OnInit {
       details: "",
       hours: 0,
       status: false,
-      imageUrl: this.assigned_to.imageUrl,
       user_short:""
     }
    
@@ -304,15 +297,27 @@ export class ProjectdetailsComponent implements OnInit {
     let taskToget;
     let taskToGetObs = this.projectService.getTask(taskKey,this.projectID);
     taskToGetObs.subscribe((task) => {
-      this.taskObj = task;
+      this.assigned_to={name:"",key:""};
+      console.log(task)
+      this.taskObj=task;
+      this.taskObj.user_short=task.user_short;
       this.categoryType = task.categoryType;
-      this.assigned_to.user_name = task.assigned_to;
-      this.assigned_to.short_name=task.user_short;
+      this.assigned_to.key=task.user_short;
+      this.assigned_to.name=task.assigned_to;
+      this.user_short_before= task.user_short;
     })
-    this.user_short_before=this.taskObj.user_short;
-  
+    console.log(this.assigned_to)
   }
   editTask() {
+
+    this.projectService.editTasksForMe( 
+      this.user_short_before,
+      this.assigned_to.key,
+      this.projectID,
+      this.taskId,
+      this.taskObj.dueDate,
+      this.taskObj.taskName,
+      this.taskObj.categoryType);
     this.projectService.editTask({
       taskName: this.taskObj.taskName,
       categoryType: this.taskObj.categoryType,
@@ -322,22 +327,13 @@ export class ProjectdetailsComponent implements OnInit {
       details: this.taskObj.details,
       hours: this.taskObj.hours,
       status: this.taskObj.status,
-      imageUrl: this.taskObj.imageUrl,
-      user_short:this.assigned_to.short_name,
+      imageUrl:this.url.$value,
+      user_short:this.assigned_to.key,
     });
+
     this.projectService.editNotification({
-      due_date:this.taskObj.dueDate,manager:this.projectManager,project_id:this.projectID,task_id:this.taskId,task_name:this.taskObj.taskName
+      due_date:this.taskObj.dueDate,manager:this.loggedInUser,project_id:this.projectID,task_id:this.taskId,task_name:this.taskObj.taskName
       },this.taskObj.user_short,this.taskId)
-    if(this.isManager){
-      this.projectService.editTasksForMe( 
-        this.user_short_before,
-        this.taskObj.user_short,
-        this.projectID,
-        this.taskId,
-        this.taskObj.dueDate,
-        this.taskObj.taskName,
-        this.taskObj.categoryType)
-    }
     this.sortUp = true;
     this.timelineCmp.destroy();
     this.timelineCmp.getTasks();
@@ -345,8 +341,7 @@ export class ProjectdetailsComponent implements OnInit {
   }
   deleteTask(){
     this.projectService.deleteTasksForMe(this.taskObj.user_short,this.taskId,this.projectID);
-    this.projectService.deleteTask(this.taskObj.user_short);
-    
+    this.projectService.deleteTask( this.taskObj.user_short);
     this.sortUp = true;
     this.timelineCmp.destroy();
     this.timelineCmp.getTasks();
