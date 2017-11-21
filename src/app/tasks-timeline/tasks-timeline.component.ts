@@ -24,7 +24,11 @@ export class TasksTimelineComponent implements OnInit {
   constructor(private projectService:ProjectService,private element: ElementRef) { }
   render(){  
     this.items = new vis.DataSet(this.userTasks);
-    this.options = {start:new Date()};  
+    let oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    let threeWeeksLater=new Date();
+    threeWeeksLater.setDate(oneWeekAgo.getDate() + 21);
+    this.options = {start:oneWeekAgo,end:threeWeeksLater,timeAxis: {scale: 'day', step: 5}};  
     this.timeline = new vis.Timeline(this.element.nativeElement, this.items,this.options);
     }
     destroy(){

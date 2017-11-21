@@ -4,6 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { PagerService } from "pagination";
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IMultiSelectOption, IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
+import {IMyDpOptions} from 'mydatepicker';
 
 import * as _ from 'underscore';
 import { AuthService } from '../auth.service';
@@ -54,6 +55,11 @@ export class HomeComponent implements OnInit   {
   database:AngularFireDatabase;
   project_key:string;
   projectStatus:boolean=false;
+  private myDatePickerOptions: IMyDpOptions = {
+    // other options...
+    dateFormat: 'dd.mm.yyyy',
+};
+private model: Object = { date: { year: 2018, month: 10, day: 9 } };
   constructor(
               private userService:UserService,
               private projectService:ProjectService,
@@ -101,7 +107,7 @@ archiveProject(projectId,members){
           title: this.title,
           projectStatus:this.projectStatus,
           startDate:new Date(),
-          endDate:this.endDate,
+          endDate:this.endDate.formatted,
           combined:this.title+this.course,
           project_members:this.projectMembers,
           archived:false
@@ -204,7 +210,7 @@ startDate:Date=new Date();
 title:string;
 course:string;
 project_number:string;
-endDate:Date;
+endDate:{formatted:""}
 status:string;
 selectedUsers(users){
  this.projectMembers=users;
@@ -234,7 +240,8 @@ this.authService.user.subscribe((val=>{this.routeThis(val)}))
     this.router.navigate(["learning"])
   }
 checkDate(){
-  if(new Date(this.endDate).getTime() - new Date().getTime()<0 ){
+  console.log(this.endDate)
+  if(new Date(this.endDate.formatted).getTime() - new Date().getTime()<0 ){
     this.dateInvalid=true;
   }
   else{

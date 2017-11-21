@@ -134,7 +134,8 @@ export class ProjectService {
         let x=this.database.object(`userTasks/${user}/${projectId}/tasks/${task_key}/`)
         x.set({
             start:dueDate,
-            content:task_name
+            content:task_name,
+            className:task_type
         });
     }
     deleteTasksForMe(user,task_key,projectId){
@@ -154,8 +155,14 @@ export class ProjectService {
         })
     }
     //end
-    getLearningProjects(){
-        return this.database.list(`/closeouts`)
+    getLearningProjects(searchtext){
+        return this.database.list(`/closeouts`,{
+            query:{
+                orderByChild:'course',
+                startAt:searchtext,
+                endAt:`${searchtext}\uf8ff`
+            }
+        })
     }
     tagUser(projectId,taskId,userId,taskName,dueDate,manager,type){
         if(type==false){

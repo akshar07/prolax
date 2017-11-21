@@ -251,3 +251,29 @@ textarea{
     cursor: pointer;
     color:#C73F50;
 }
+.control-label{
+    text-align: left;
+}
+svg {
+    vertical-align: bottom;
+    height: 30px;
+}
+.currentDate{
+    background-color: #f8f8f8;
+    padding: 5px;
+    font-size: 12px;
+}
+.currentDate span{
+    color:#c73f50;
+
+}
+.preDate{
+    margin-top:10px;
+    background-color: #f8f8f8;
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.date{
+    width:100%;
+}

@@ -123,7 +123,7 @@
                   <thead>
                     <tr>
                       <th class="col-lg-3">Project Name </th>
-                      <th class="col-lg-2"> Course </th>
+                      <th class="col-lg-2"> Manager </th>
                       <th class="col-lg-2" >Action</th>
                     </tr>
                   </thead>
@@ -184,7 +184,7 @@
             </div>
           </div>
           <div class="form-group" >
-            <label class="control-label col-sm-4" for="pwd">Course </label>
+            <label class="control-label col-sm-4" for="pwd">Manager </label>
             <div class="col-sm-6"> 
               <input  type="text" 
                       class="form-control" 
@@ -197,11 +197,13 @@
            <div class="form-group"> 
            <label class="control-label col-sm-4" for="pwd">Due Date:</label>
             <div class="col-sm-6"> 
-             <input  
+                <my-date-picker name="mydate" [options]="myDatePickerOptions"
+                (ngModelChange)="endDate = $event;checkDate()" formControlName="endDate" ></my-date-picker>
+             <!-- <input  
                     (ngModelChange)="endDate = $event;checkDate()" 
                     type="date" 
                     name="endDate"
-                    formControlName="endDate">
+                    formControlName="endDate"> -->
                        <p *ngIf="inputsForm.controls.endDate.dirty && inputsForm.controls.endDate?.errors" class="formInvalid">Due Date is Required</p>
                 <p *ngIf="dateInvalid" class="formInvalid">Enter Due Date after Start Date</p>
             </div>

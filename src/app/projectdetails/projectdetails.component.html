@@ -41,13 +41,13 @@
             </div>
     </div>
     <div class="timeline-wrapper" >
-        <h3>{{project_name}}</h3>
+        <h3>{{course}} | {{project_name}}</h3>
         <ul class="members">
             <li *ngFor="let user of userList | async">{{user.name}}</li>
         </ul>
         <!--modal-->
         <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <!-- Modal content-->
                 <div class="modal-content">
                 <div class="modal-header">
@@ -57,79 +57,83 @@
                 </div>
                 <div class="modal-body">
                 <form class="form-horizontal" [formGroup]="inputsForm">
+                    <div class="col-lg-6">
                     <div class="form-group">
-                        <label class="control-label col-sm-4" for="email">Task Name</label>
-                        <div class="col-sm-6">
-                        <input  type="text" 
-                                class="form-control" 
-                                placeholder="Task Name"
-                                formControlName="taskName"
-                                [(ngModel)]="taskObj.taskName"
-                                name="taskName">
+                            <label class="control-label col-sm-12" for="email">Task Name</label>
+                            <div class="col-sm-12">
+                            <input  type="text" 
+                                    class="form-control" 
+                                    placeholder="Task Name"
+                                    formControlName="taskName"
+                                    [(ngModel)]="taskObj.taskName"
+                                    name="taskName">
+                            </div>
                         </div>
                     </div>
+                  <div class="col-lg-6">
+                        <div class="form-group select" >
+                                <label class="control-label col-sm-12" for="pwd">Category:</label>
+                                <div class="col-sm-12"> 
+                                    <select type="number" [(ngModel)]="categoryType" formControlName="categoryType" (ngModelChange)="toNumber()">
+                                        <option *ngFor="let category of categoryArray" [ngValue]="category.name">{{category.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                  </div>
+                   <div class="clearfix"></div>
+                   <div class="col-lg-6">
                     <div class="form-group select" >
-                        <label class="control-label col-sm-4" for="pwd">Category Name:</label>
-                        <div class="col-sm-6"> 
-                            <select type="number" [(ngModel)]="categoryType" formControlName="categoryType" (ngModelChange)="toNumber()">
-                                <option *ngFor="let category of categoryArray" [ngValue]="category.name">{{category.name}}</option>
-                            </select>
+                            <label class="control-label col-sm-12" for="pwd">Who should Do it? </label>
+                            <div class="col-sm-12"> 
+                                <select type="number" [(ngModel)]="assigned_to" formControlName="assigned_to" (ngModelChange)="toNumberUsers()">
+                                    <option *ngFor="let user of userList | async; let i=index" [ngValue]="user" [selected]="user==assigned_to">
+                                        {{user?.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                   </div>
+                   <div class="col-lg-6">
+                        <div class="form-group select" >
+                                <label class="control-label col-sm-12" for="pwd">Tags </label>
+                                <div class="col-sm-12"> 
+                                        <tag-input [(ngModel)]='tags'  formControlName="tags"    theme='minimal'></tag-input>
+                                </div>
+                            </div>
+                       </div>
+                    <div class="col-lg-6">
+                        <div class="form-group"> 
+                            <label class="control-label col-sm-12" for="pwd">Task Description</label>
+                                <div class="col-sm-12"> 
+                                    <textarea  
+                                                formControlName="details" 
+                                                [(ngModel)]="taskObj.details"
+                                                rows="3">
+                                    </textarea>
+                                </div>
                         </div>
                     </div>
-                    <div class="form-group select" >
-                        <label class="control-label col-sm-4" for="pwd">Assign To</label>
-                        <div class="col-sm-6"> 
-                            <select type="number" [(ngModel)]="assigned_to" formControlName="assigned_to" (ngModelChange)="toNumberUsers()">
-                                <option *ngFor="let user of userList | async; let i=index" [ngValue]="user" [selected]="user==assigned_to">
-                                    {{user?.name}}
-                                </option>
-                            </select>
-                        </div>
+                    <div class="col-lg-6">
+                            <div class="form-group"> 
+                                    <label class="control-label col-sm-12" for="pwd">Due Date:</label>
+                                        <div class="col-sm-6"> 
+                                        <input  
+                                                (ngModelChange)="taskObj.dueDate = $event; checkDate()" 
+                                                type="date" 
+                                                name="dueDate"
+                                                class="date"
+                                                formControlName="dueDate"
+                                                [value]="taskObj.dueDate | date:'yyyy-MM-dd'"
+                                                >
+                                        <p class="preDate"> <span (click)="preDate(1)"> +1 Day</span> | <span (click)="preDate(2)"> +2 Days</span> |<span (click)="preDate(7)"> +7 Days</span> </p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p class="currentDate"><span> Current Date: </span>{{currentDate | date}}</p>
+                                        </div>
+                                    </div>
                     </div>
-                    <div class="form-group"> 
-                    <label class="control-label col-sm-4" for="pwd">Start Date:</label>
-                        <div class="col-sm-6"> 
-                        <input  
-                                (ngModelChange)="taskObj.startDate = $event" 
-                                type="date" 
-                                name="startDate"
-                                formControlName="startDate"
-                                [value]="taskObj.startDate | date:'yyyy-MM-dd'">
-
-                        </div>
-                    </div>
-                    <div class="form-group"> 
-                    <label class="control-label col-sm-4" for="pwd">Due Date:</label>
-                        <div class="col-sm-6"> 
-                        <input  
-                                (ngModelChange)="taskObj.dueDate = $event; checkDate()" 
-                                type="date" 
-                                name="dueDate"
-                                formControlName="dueDate"
-                                [value]="taskObj.dueDate | date:'yyyy-MM-dd'"
-                                >
-                        </div>
-                    </div>
-                    <div class="form-group"> 
-                    <label class="control-label col-sm-4" for="pwd">Hours</label>
-                        <div class="col-sm-6"> 
-                        <input  
-                                [(ngModel)]="taskObj.hours" 
-                                type="number" 
-                                name="hours"
-                                formControlName="hours">
-                        </div>
-                    </div>
-                    <div class="form-group"> 
-                    <label class="control-label col-sm-4" for="pwd">Task Description</label>
-                        <div class="col-sm-6"> 
-                        <textarea  
-                                    formControlName="details" 
-                                    [(ngModel)]="taskObj.details"
-                                    rows="3">
-                        </textarea>
-                        </div>
-                    </div>
+               
+                   <div class="clearfix"></div>
                     <div class="form-group" *ngIf="edit">
                         
                          <label class="control-label col-sm-4" for="pwd">Completed</label>
@@ -209,19 +213,13 @@
                         {{item.details}} 
                     </div>
                     <div class="col-lg-3 details">
-                        <p><strong class="text-capitalize">Start Date:</strong> {{item.startDate}}</p>
-                    </div>
-                    <div class="col-lg-3 details">
                          <p><strong class="text-capitalize">Due Date:</strong> {{item.dueDate}}</p>
                     </div>
                     <div class="col-lg-3 details">
                         <p><strong class="text-capitalize">Category:</strong> {{item.categoryType}}</p>
                     </div>
-                    <div class="col-lg-2 details">
-                        <p><strong class="text-capitalize">Hours:</strong> {{item.hours}}</p>
-                    </div>
-                    <div class="col-lg-1 details">
-                        <button type="button" class="btn btn-sm action-buttons" data-toggle="collapse" [attr.data-target]="'#' + i"(click)="getTask(item.$key)">+</button>
+                    <div class="col-lg-6 details">
+                        <button type="button" class="btn btn-sm action-buttons pull-right" data-toggle="collapse" [attr.data-target]="'#' + i"(click)="getTask(item.$key)"><i class="fa fa-comments" aria-hidden="true"></i></button>
                         
                     </div>
                     <div class="clearfix"></div>
@@ -234,7 +232,7 @@
                             <ul class="nav nav-pills" role="tablist">
 
                                 <li class="nav-item active">
-                                <a class="nav-link active" data-toggle="tab" href="#qcc{{i}}" role="tab">Task logs</a>
+                                <a class="nav-link active" data-toggle="tab" href="#qcc{{i}}" role="tab">Comments</a>
                                 </li>
                             </ul>
                         <!-- Tab panes -->
@@ -288,9 +286,7 @@
                       <app-closeout [projectId]="projectID" 
                                     [isManager]="isManager" 
                                     [projectName]="project_name" 
-                                    [projectCategory]="projectCategory" 
-                                    [marketSector]="marketSector"
-                                    [projectArea]="projectArea"
+                                    [course]="course"
                                     (onComplete)="onComplete($event)"></app-closeout>
                 </div>
                   

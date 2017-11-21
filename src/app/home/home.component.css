@@ -118,12 +118,16 @@ padding-left:0px;
     background:#fff;
     height:50px;
     padding:10px;
+    word-wrap: break-word;
 }
 #noteInput{
     width: 97%;
     padding: 15px;
     padding-bottom: 0;
     padding-left: 0;
+}
+.home-wrapper{
+    margin-bottom: 50px;
 }
 .note-list li{
     margin-top:10px;

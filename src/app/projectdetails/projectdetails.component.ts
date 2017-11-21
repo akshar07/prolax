@@ -19,6 +19,8 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./projectdetails.component.css']
 })
 export class ProjectdetailsComponent implements OnInit {
+  due_date_string: string;
+  course: any;
   loggedInName: string;
   url: any;
   user_short_before: string;
@@ -43,6 +45,8 @@ export class ProjectdetailsComponent implements OnInit {
   userList: FirebaseListObservable<any[]>;
   taskList: any[] = [];
   userArray = [];
+  currentDate:Date;
+  tags = [];
   constructor(
     private location: Location,
     private projectService:ProjectService,
@@ -71,6 +75,7 @@ export class ProjectdetailsComponent implements OnInit {
     status: false,
     user_short:"",
   }
+  
   clean() {
     this.categoryType=null;
     this.taskObj = {
@@ -157,6 +162,7 @@ export class ProjectdetailsComponent implements OnInit {
     let timelineInfo= this.projectService.getTimelineInfo(this.projectID);
     timelineInfo.subscribe((info)=>{
       this.project_name=info.project_name;
+      this.course=info.course;
     })
     this.userList=this.userService.getProjectUsers(this.projectID);
     let projectTasksObs=this.projectService.getTimeline(this.projectID);
@@ -174,7 +180,8 @@ export class ProjectdetailsComponent implements OnInit {
       dueDate: [this.taskObj.dueDate],
       details: [this.taskObj.details],
       hours: [this.taskObj.hours],
-      status: [this.taskObj.status]
+      status: [this.taskObj.status],
+      tags:[this.tags]
     })
     if (!this.taskObj.status) {
       this.projectStatus = "In Progress";
@@ -183,7 +190,7 @@ export class ProjectdetailsComponent implements OnInit {
       this.projectStatus = "Completed";
     }
     this.authService.user.subscribe((val => { this.routeThis(val) }));
-
+  this.currentDate=new Date();
   }
   // tagUser(){
   //   this.projectService.tagUser(this.projectID,this.taskId,this.assigned_to.short_name,this.taskObj.taskName,this.taskObj.dueDate,this.loggedInUser,false);
@@ -191,6 +198,13 @@ export class ProjectdetailsComponent implements OnInit {
   routeThis(val) {
     if (!val)
       this.router.navigate([""])
+  }
+  preDate(n){
+    let current = new Date()
+    console.log(this.tags)
+    this.taskObj.dueDate=new Date(current.getTime() + n*24*60*60*1000 );
+    this.due_date_string = String(`${this.taskObj.dueDate.getMonth() + 1}-${this.taskObj.dueDate.getDay()}-${this.taskObj.dueDate.getFullYear()}`)
+  
   }
   checkDate() {
     if (new Date(this.taskObj.dueDate).getTime() - new Date(this.taskObj.startDate).getTime() < 0) {
@@ -251,30 +265,30 @@ export class ProjectdetailsComponent implements OnInit {
     }
   }
   addTask() {
-
-    this.edit = false;
-    let task_key= this.projectService.addTasks({
-      taskName: this.taskObj.taskName,
-      categoryType: this.taskObj.categoryType,
-      assigned_to: this.taskObj.assigned_to,
-      startDate: this.taskObj.startDate,
-      dueDate: this.taskObj.dueDate,
-      details: this.taskObj.details,
-      hours: this.taskObj.hours,
-      status: false,
-      user_short:this.assigned_to.key,
-      comments:{},
-      imageUrl:this.url.$value
-    });
-    this.projectService.addTaskNotif(this.assigned_to.key,this.loggedInName,this.projectID,task_key,this.taskObj.taskName,this.taskObj.dueDate)
-    // this.projectService.tagUser(this.projectID,task_key,this.assigned_to,this.taskObj.taskName,this.taskObj.dueDate,this.loggedInUser,true);
-    this.projectService.addTasksForMe(this.assigned_to.key,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName,this.taskObj.categoryType)
-    this.inputsForm.reset();
-    this.sortUp = true;
-    this.timelineCmp.destroy();
-    this.timelineCmp.getTasks();
-    this.timelineCmp.drawTimeline();
-  }
+    
+        this.edit = false;
+        let task_key= this.projectService.addTasks({
+          taskName: this.taskObj.taskName,
+          categoryType: this.taskObj.categoryType,
+          assigned_to: this.taskObj.assigned_to,
+          startDate: this.taskObj.startDate,
+          dueDate: this.taskObj.dueDate,
+          details: this.taskObj.details,
+          hours: this.taskObj.hours,
+          status: false,
+          user_short:this.assigned_to.key,
+          comments:{},
+          imageUrl:this.url.$value,tags:this.tags
+        });
+        this.projectService.addTaskNotif(this.assigned_to.key,this.loggedInName,this.projectID,task_key,this.taskObj.taskName,this.taskObj.dueDate)
+        // this.projectService.tagUser(this.projectID,task_key,this.assigned_to,this.taskObj.taskName,this.taskObj.dueDate,this.loggedInUser,true);
+        this.projectService.addTasksForMe(this.assigned_to.key,this.projectID,this.project_name,task_key,this.taskObj.dueDate,this.taskObj.taskName,this.taskObj.categoryType)
+        this.inputsForm.reset();
+        this.sortUp = true;
+        this.timelineCmp.destroy();
+        this.timelineCmp.getTasks();
+        this.timelineCmp.drawTimeline();
+      }
   resetForm() {
     this.taskObj={
       taskName: "",
@@ -309,36 +323,37 @@ export class ProjectdetailsComponent implements OnInit {
     console.log(this.assigned_to)
   }
   editTask() {
-
-    this.projectService.editTasksForMe( 
-      this.user_short_before,
-      this.assigned_to.key,
-      this.projectID,
-      this.taskId,
-      this.taskObj.dueDate,
-      this.taskObj.taskName,
-      this.taskObj.categoryType);
-    this.projectService.editTask({
-      taskName: this.taskObj.taskName,
-      categoryType: this.taskObj.categoryType,
-      assigned_to: this.taskObj.assigned_to,
-      startDate: this.taskObj.startDate,
-      dueDate: this.taskObj.dueDate,
-      details: this.taskObj.details,
-      hours: this.taskObj.hours,
-      status: this.taskObj.status,
-      imageUrl:this.url.$value,
-      user_short:this.assigned_to.key,
-    });
-
-    this.projectService.editNotification({
-      due_date:this.taskObj.dueDate,manager:this.loggedInUser,project_id:this.projectID,task_id:this.taskId,task_name:this.taskObj.taskName
-      },this.taskObj.user_short,this.taskId)
-    this.sortUp = true;
-    this.timelineCmp.destroy();
-    this.timelineCmp.getTasks();
-    this.timelineCmp.drawTimeline();
-  }
+    
+        this.projectService.editTasksForMe( 
+          this.user_short_before,
+          this.assigned_to.key,
+          this.projectID,
+          this.taskId,
+          this.taskObj.dueDate,
+          this.taskObj.taskName,
+          this.taskObj.categoryType);
+        this.projectService.editTask({
+          taskName: this.taskObj.taskName,
+          categoryType: this.taskObj.categoryType,
+          assigned_to: this.taskObj.assigned_to,
+          startDate: this.taskObj.startDate,
+          dueDate: this.taskObj.dueDate,
+          details: this.taskObj.details,
+          hours: this.taskObj.hours,
+          status: this.taskObj.status,
+          imageUrl:this.url.$value,
+          user_short:this.assigned_to.key,
+          tags:this.tags
+        });
+    
+        this.projectService.editNotification({
+          due_date:this.taskObj.dueDate,manager:this.loggedInUser,project_id:this.projectID,task_id:this.taskId,task_name:this.taskObj.taskName
+          },this.taskObj.user_short,this.taskId)
+        this.sortUp = true;
+        this.timelineCmp.destroy();
+        this.timelineCmp.getTasks();
+        this.timelineCmp.drawTimeline();
+      }
   deleteTask(){
     this.projectService.deleteTasksForMe(this.taskObj.user_short,this.taskId,this.projectID);
     this.projectService.deleteTask( this.taskObj.user_short);

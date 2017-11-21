@@ -9,6 +9,8 @@ import {HttpModule} from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 import {PopoverModule} from "ngx-popover";
+import { MyDatePickerModule } from 'mydatepicker';
+import { TagInputModule } from 'ngx-chips';
 
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
@@ -62,9 +64,11 @@ import { DropdownComponent } from './dropdown/dropdown.component';
     FormsModule,
     PopoverModule,
     HttpModule,
+    TagInputModule,
     MultiselectDropdownModule,
     ReactiveFormsModule ,
     BrowserAnimationsModule,
+    MyDatePickerModule,
       RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
